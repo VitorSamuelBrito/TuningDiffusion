@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
       - name: Creating the Jupyter Notebook
         run: |
-          py2nb tuningdiffusion.py
+          py2nb src/tuningdiffusion.py
           
 #      - name: Test with pytest
 #        run: |
