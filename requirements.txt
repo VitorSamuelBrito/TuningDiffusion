@@ -1,0 +1,10 @@
+numpy
+scipy
+h5py
+pylint
+py2nb
+matplotlib
+urllib3
+pytest 
+pytest-cov
+jupyter
