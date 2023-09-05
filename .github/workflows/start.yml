@@ -26,6 +26,7 @@ jobs:
           py2nb src/tuningdiffusion.py
       - name: Commiting generated files # 
         run: |
+          git config --local user.name "fredcfreitas"
           git add .
           git commit -m "Updating the notebooks according last script(s) changes"
       - name: Push changes # 
@@ -38,5 +39,3 @@ jobs:
 #        run: |
 #          pip install pytest pytest-cov
 #          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
-
-
