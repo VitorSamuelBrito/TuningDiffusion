@@ -4,15 +4,13 @@ on: [push]
 
 jobs:
   build:
-
 # building the environment
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.9]
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
       - uses: actions/setup-python@v4
         with:
@@ -31,17 +29,15 @@ jobs:
           git add .
           git commit -m "Updating the notebooks according last script(s) changes"
           git push
-      - name: Push changes # 
-      - uses: ad-m/github-push-action@master
-        with:
-          #ssh: true
-          #github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          force: true
-
+#      - name: Push changes # 
+#      - uses: ad-m/github-push-action@master
+#        with:
+#          ssh: true
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          branch: ${{ github.ref }}
+#          force: true
+#
 #      - name: Test with pytest
 #        run: |
 #          pip install pytest pytest-cov
 #          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
-
-
