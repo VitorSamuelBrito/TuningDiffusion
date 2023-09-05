@@ -31,7 +31,7 @@ jobs:
           git commit -m "Updating the notebooks according last script(s) changes"
 #          git push
       - name: Push changes # 
-      - uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@master
         with:
           ssh: true
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
