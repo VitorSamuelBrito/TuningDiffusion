@@ -31,7 +31,10 @@ jobs:
           git add .
           git commit -m "Updating the notebooks according last script(s) changes"
       - name: Push changes # 
-        uses: ad-m/github-push-action@master
+      - uses: webfactory/ssh-agent@v0.4.1
+        with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: ad-m/github-push-action@master
         with:
           ssh: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -42,3 +45,5 @@ jobs:
 #        run: |
 #          pip install pytest pytest-cov
 #          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+
+
