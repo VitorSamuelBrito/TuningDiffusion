@@ -22,8 +22,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Creating the Jupyter Notebook
-        run: py2nb src/tuningdiffusion.py
-          
+        run: |
+          py2nb src/tuningdiffusion.py
+      - name: Commiting generated files # 
+        run: |
+          git add .
+          git commit -m "Updating the notebooks according last script(s) changes"
+      - name: Push changes # 
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
+
 #      - name: Test with pytest
 #        run: |
 #          pip install pytest pytest-cov
