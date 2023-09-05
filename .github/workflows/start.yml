@@ -22,7 +22,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Creating the Jupyter Notebook
-      - uses: actions/setup-node@v3 
         run: py2nb src/tuningdiffusion.py
           
 #      - name: Test with pytest
