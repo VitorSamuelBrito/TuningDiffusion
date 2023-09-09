@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 ## Loading the input data ##
 
-vl = np.genfromtxt('../input_/data_sin.txt')#, dtype= None, delimiter= None)
+vl = np.genfromtxt('../input_data/data_sin.txt')#, dtype= None, delimiter= None)
 
 # print(vl, type(vl))
 
