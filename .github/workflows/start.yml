@@ -26,7 +26,7 @@ jobs:
       # Make sure the @v0.7.0 matches the current version of the action
       - uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.SAMUEL_KEY }}
+          ssh-private-key: ${{ secrets.VITOR_KEY }}
 
       - name: Creating the Jupyter Notebook
         run: |
@@ -43,8 +43,8 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           ssh: true
-          ssh-private-key: ${{ secrets.SAMUEL_KEY }}
+          ssh-private-key: ${{ secrets.VITOR_KEY }}
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
-          ssh_key: ${{ secrets.SAMUEL_KEY }}
+          ssh_key: ${{ secrets.VITOR_KEY }}
           branch: ${{ github.ref }}
           force: true
