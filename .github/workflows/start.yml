@@ -27,8 +27,7 @@ jobs:
       - uses: webfactory/ssh-agent@v0.7.0
         with:
           # ssh-private-key: ${{ secrets.VITOR_KEY }}
-          # ssh-private-key: ${{ secrets.SAMUEL_KEY }}
-          ssh-private-key: ${{ secrets.TESTE_KEY }}
+          ssh-private-key: ${{ secrets.SAMUEL_KEY }}
 
       - name: Creating the Jupyter Notebook
         run: |
@@ -46,11 +45,9 @@ jobs:
         with:
           ssh: true
           # ssh-private-key: ${{ secrets.VITOR_KEY }}
-          # ssh-private-key: ${{ secrets.SAMUEL_KEY }}
-          ssh-private-key: ${{ secrets.TESTE_KEY }}
+          ssh-private-key: ${{ secrets.SAMUEL_KEY }}
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
           # ssh_key: ${{ secrets.VITOR_KEY }}
-          # ssh_key: ${{ secrets.SAMUEL_KEY }}
-          ssh_key: ${{ secrets.TESTE_KEY }}
+          ssh_key: ${{ secrets.SAMUEL_KEY }}
           branch: ${{ github.ref }}
           force: true
