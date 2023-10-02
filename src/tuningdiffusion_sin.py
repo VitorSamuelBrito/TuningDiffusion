@@ -180,13 +180,13 @@ X = np.asarray(Hm)
 
 x = X 
 fig, ax = plt.subplots()
-ax.plot(x, FF, label = 'Surface_FX') 
-ax.plot(x, EE, label = 'Surface_EE')
-ax.plot(x, DDV, label = 'Surface_DDv')
-plt.xlabel('Varivel H')
-plt.ylabel('Variveis FX e EE')
-plt.xlim([None, 100])
-plt.ylim([-20, 100])
+ax.plot(x, FF, label = 'Energia Livre') 
+ax.plot(x, EE, label = 'Velocidade de Drift')
+ax.plot(x, DDV, label = 'Coeficiente de difusão')
+plt.xlabel('passos')
+plt.ylabel('F[Q], v[Q] e D[Q]')
+plt.xlim([None, 60])
+plt.ylim([-6, 6])
 plt.legend()
 plt.show()
 
@@ -215,8 +215,9 @@ for i in range(1, int(STEPS) + 1):
 X = np.asarray(X)
 G = np.asarray(G)
 
-#total =  np.stack((X, G), axis=-1)
-#np.savetxt("TRAJECTORY", total, fmt="%5.2f")
+total =  np.stack((X, G), axis=-1)
+np.savetxt("TRAJECTORY", total, fmt="%5.2f")
+np.savetxt("trajectory_file", G, fmt="%5.2f")
 
 #-----------------------
 
@@ -225,8 +226,8 @@ G = np.asarray(G)
 x = X 
 fig, ax = plt.subplots()
 ax.plot(x, G, label = 'Trajectory')
-plt.xlabel('Varivel T')
-plt.ylabel('Varivel G')
+plt.xlabel('passos')
+plt.ylabel('Coordenadas de reação, Q')
 # plt.xlim([None, 60])
 plt.ylim([0, 80])
 plt.legend()
