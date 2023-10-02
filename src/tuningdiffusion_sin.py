@@ -171,8 +171,8 @@ EE = np.asarray(ES)
 DDV = np.asarray(DDV)
 X = np.asarray(Hm)
 
-#total =  np.stack((X, FF,EE, DDV), axis=-1)
-#np.savetxt("SURFACE", total, fmt="%10.6f")
+total =  np.stack((X, FF,EE, DDV), axis=-1)
+np.savetxt("SURFACE", total, fmt="%10.6f")
 
 #-----------------------
 
@@ -180,8 +180,8 @@ X = np.asarray(Hm)
 
 x = X 
 fig, ax = plt.subplots()
-ax.plot(x, FF, label = 'Energia Livre') 
-ax.plot(x, EE, label = 'Velocidade de Drift')
+ax.plot(x, FF, label = 'Velocidade de Drift') 
+ax.plot(x, EE, label = 'Energia livre')
 ax.plot(x, DDV, label = 'Coeficiente de difusão')
 plt.xlabel('passos')
 plt.ylabel('F[Q], v[Q] e D[Q]')
