@@ -172,7 +172,7 @@ DDV = np.asarray(DDV)
 X = np.asarray(Hm)
 
 total =  np.stack((X, FF,EE, DDV), axis=-1)
-np.savetxt("SURFACE", total, fmt="%10.6f")
+np.savetxt("SURFACE_sin", total, fmt="%10.6f")
 
 #-----------------------
 
@@ -194,21 +194,48 @@ np.savetxt("SURFACE", total, fmt="%10.6f")
 
 ### Trajectory calculation ###
 
-with open('trajecory_file.txt', 'a') as arquivo:
-    for i in range(1, int(STEPS) + 1):
-	# You must 'correct' with '-1' because python's indexation starting on zero
-        J = int(H/width) - 1
-        
-        FX = FF[J]
-        DX = DDV[J]
-        Dslope = DDM[J]
 
-        H += (Dslope-DX*FX)*dt+gaussian(DX, dt)
+G = []
+X = []
 
-        if i % 100 == 0:  ## spride ## every 100 values
-            T = dt * i
-            linha = f"{H}\n"
-            arquivo.write(linha)
+for i in range(1, int(STEPS) + 1):
+    # You must 'correct' with '-1' because python's indexation starting on zero
+    J = int(H/width) - 1
+
+    FX =FF[(J)]
+    DX=DDV[(J)]
+    Dslope=DDM[(J)]
+
+    H += (Dslope-DX*FX)*dt+gaussian(DX,dt);
+    
+    if i % 100==0:  ## spride ## every 100 values
+        T = dt *i
+        G.append(H)
+        X.append(T)
+    
+X = np.asarray(X)
+G = np.asarray(G)
+
+total =  np.stack((X, G), axis=-1)
+np.savetxt("TRAJECTORY_sin", total, fmt="%5.2f")
+#np.savetxt("trajectory_file", G, fmt="%5.2f")
+
+
+#with open('trajecory_file.txt', 'a') as arquivo:
+#    for i in range(1, int(STEPS) + 1):
+#	# You must 'correct' with '-1' because python's indexation starting on zero
+#        J = int(H/width) - 1
+#        
+#        FX = FF[J]
+#        DX = DDV[J]
+#        Dslope = DDM[J]
+#
+#        H += (Dslope-DX*FX)*dt+gaussian(DX, dt)
+#
+#        if i % 100 == 0:  ## spride ## every 100 values
+#            T = dt * i
+#            linha = f"{H}\n"
+#            arquivo.write(linha)
             
 #-----------------------
 

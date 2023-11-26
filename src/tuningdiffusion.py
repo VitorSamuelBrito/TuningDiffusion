@@ -150,24 +150,24 @@ X = np.asarray(Hm)
 # np.savetxt('SURFACE_EE', EE, fmt="%10.6f")
 # np.savetxt('SURFACE_FX', FF, fmt="%10.6f")
 
-# total =  np.stack((X, EE, FF), axis=-1)
-# np.savetxt("SURFACE", total, fmt="%10.6f")
+total =  np.stack((X, EE, FF), axis=-1)
+np.savetxt("SURFACE", total, fmt="%10.6f")
 
 #-----------------------
 
 ### Surface ###
 
-import matplotlib.pyplot as plt
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, FF, label = 'Surface_FX') 
-ax.plot(x, EE, label = 'Surface_EE')
-plt.xlabel('Varivel H')
-plt.ylabel('Variveis FX e EE')
-plt.xlim([None, 60])
-plt.ylim([-10, 60])
-plt.legend()
-plt.show()
+#import matplotlib.pyplot as plt
+#x = X 
+#fig, ax = plt.subplots()
+#ax.plot(x, FF, label = 'Surface_FX') 
+#ax.plot(x, EE, label = 'Surface_EE')
+#plt.xlabel('Varivel H')
+#plt.ylabel('Variveis FX e EE')
+#plt.xlim([None, 60])
+#plt.ylim([-10, 60])
+#plt.legend()
+#plt.show()
 
 #-----------------------
 
@@ -194,22 +194,22 @@ G = np.asarray(G)
 # np.savetxt('TRAJECTORY_Y', G, fmt="%5.2f" )
 # np.savetxt('TRAJECTORY_X', X, fmt="%5.2f" )
 
-# total =  np.stack((G, X), axis=-1)
-# np.savetxt("TRAJECTORY", total, fmt="%5.2f")
+total =  np.stack((G, X), axis=-1)
+np.savetxt("TRAJECTORY", total, fmt="%5.2f")
 
 #-----------------------
 
 ### Trajectory ###
 
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, G, label = 'Trajectory')
-plt.xlabel('Varivel T')
-plt.ylabel('Varivel G')
+#x = X 
+#fig, ax = plt.subplots()
+#ax.plot(x, G, label = 'Trajectory')
+#plt.xlabel('Varivel T')
+#plt.ylabel('Varivel G')
 #plt.xlim([None, 60])
-plt.ylim([10, 60])
-plt.legend()
-plt.show()
+#plt.ylim([10, 60])
+#plt.legend()
+#plt.show()
 
 #-----------------------
 
