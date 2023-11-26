@@ -124,4 +124,3 @@ invt =  np.stack((Q, T), axis=-1)
 np.savetxt("TRAJECTORY", invt, fmt="%5.2f")
 
 #-----------------------
-
