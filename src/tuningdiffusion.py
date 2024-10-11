@@ -47,9 +47,9 @@ def gaussian (DIFFX, dt):
 vl = np.genfromtxt('../input_data/data.txt')#, dtype= None, delimiter= None)
 
 #-----------------------
-## Defining the variables and supplying them with data ##
+## Defining the variables and supplying them with data
 
-X = vl[0]
+# X = vl[0] # the variable not is necessary
 
 DIFFX = vl[1]
 
