@@ -2,7 +2,6 @@
 #| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 #-----------------------
 
@@ -172,23 +171,7 @@ DDV = np.asarray(DDV)
 X = np.asarray(Hm)
 
 total =  np.stack((X, FF,EE, DDV), axis=-1)
-np.savetxt("SURFACE", total, fmt="%10.6f")
-
-#-----------------------
-
-### Surface ###
-
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, FF, label = 'Velocidade de Drift') 
-ax.plot(x, EE, label = 'Energia livre')
-ax.plot(x, DDV, label = 'Coeficiente de difusão')
-plt.xlabel('passos')
-plt.ylabel('F[Q], v[Q] e D[Q]')
-plt.xlim([None, 60])
-plt.ylim([-6, 6])
-plt.legend()
-plt.show()
+#np.savetxt("SURFACE", total, fmt="%10.6f")
 
 #-----------------------
 
@@ -216,23 +199,7 @@ X = np.asarray(X)
 G = np.asarray(G)
 
 total =  np.stack((X, G), axis=-1)
-np.savetxt("TRAJECTORY", total, fmt="%5.2f")
-np.savetxt("trajectory_file", G, fmt="%5.2f")
-
-#-----------------------
-
-### Trajectory ###
-
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, G, label = 'Trajectory')
-plt.xlabel('passos')
-plt.ylabel('Coordenadas de reação, Q')
-# plt.xlim([None, 60])
-plt.ylim([0, 80])
-plt.legend()
-plt.show()
-
-#-----------------------
+#np.savetxt("TRAJECTORY", total, fmt="%5.2f")
+#np.savetxt("trajectory_file", G, fmt="%5.2f")
 
 #-----------------------
