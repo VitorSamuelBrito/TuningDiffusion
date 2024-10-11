@@ -6,7 +6,7 @@ import numpy as np
 #| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
 
 #-----------------------
-## 
+## functions of script 
 
 def DD(DIFFX, SINM, X, SINF):
     eqd = DIFFX+SINM*np.sin(X/SINF)
@@ -34,9 +34,6 @@ def EG(Max, sigma, HEIGHT, X):
     eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
     return eq4
 
-#print(DD(DIFFX, SINM, X, SINF), DDslope(DIFFX, SINM, X, SINF), grad24(M, D, HEIGHT, X), E24(M, D, HEIGHT, X), gradG(Max, sigma, HEIGHT, X), EG(Max, sigma, HEIGHT, X))
-
-
 def gaussian (DIFFX, dt):
     # sd is the rms value of the distribution.
     sd = np.sqrt(2*DIFFX*dt)
@@ -53,20 +50,13 @@ def gaussian (DIFFX, dt):
             break
     return RR
 
-#print(gaussian(DIFFX, dt))
-
-
 #-----------------------
-
-## Loading the input data ##
+## Loading the input data
 
 vl = np.genfromtxt('../input_data/data_sin.txt')#, dtype= None, delimiter= None)
 
-# print(vl, type(vl))
-
 #-----------------------
-
-## Defining the variables and supplying them with data ##
+## Defining the variables and supplying them with data
 
 X = vl[0]
 
@@ -89,11 +79,7 @@ SLOPE = vl[9]
 
 NG = vl[10]
 
-#print(X, DIFFX, SINM, SINF, STEPS, dt, basin1, basin2, HEIGHT, SLOPE, NG)
-
-#-----------------------
-
-## 
+## others variables 
 
 M=(basin2+basin1)/2
 D=(basin2-basin1)/2
@@ -101,19 +87,6 @@ D=(basin2-basin1)/2
 bounds = 100
 grids = 100000
 width = bounds*1.000000/grids
-
-# print(M, D, width)
-
-#-----------------------
-
-## Checking the values of the loaded data ##
-
-for l in vl:
-    print(l)
-
-#-----------------------
-
-### 
 
 Max = np.zeros(int(NG))
 sigma = np.zeros(int(NG))
@@ -125,13 +98,15 @@ for i in range(int(NG)):
     sigma[i] = vl[12+j]
     GH[i] = vl[13+j]
     
-# print(Max)
-# print(sigma)
-# print(GH)
-
 #-----------------------
+## Checking the values of the loaded data 
 
-### Surface calculation ###
+for l in vl:
+    print(l)
+
+print(M, D, width, Max, sigma, GH)
+#-----------------------
+## Surface calculation
 
 FF=[]
 ES =[]
@@ -172,8 +147,7 @@ total =  np.stack((X, FF,EE, DDV), axis=-1)
 #np.savetxt("SURFACE", total, fmt="%10.6f")
 
 #-----------------------
-
-### Trajectory calculation ###
+## Trajectory calculation
 
 G = []
 X = []
