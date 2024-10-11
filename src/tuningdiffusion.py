@@ -4,8 +4,7 @@ import numpy as np
 #| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
 
 #-----------------------
-
-###
+## functions of script 
 
 def grad24(M, D, HEIGHT, X):
     eq1 = (-2*HEIGHT*2*(X-M)/D**2 +4*HEIGHT*(X-M)**3/D**4)
@@ -25,13 +24,6 @@ def EG(Max, sigma, HEIGHT, X):
     eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
     return eq4
 
-
-#print(grad24(M, D, HEIGHT, X), E24(M, D, HEIGHT, X), gradG(Max, sigma, HEIGHT, X), EG(Max, sigma, HEIGHT, X))
-
-#-----------------------
-
-###
-
 def gaussian (DIFFX, dt):
     # sd is the rms value of the distribution.
     sd = 2*DIFFX*dt
@@ -49,16 +41,12 @@ def gaussian (DIFFX, dt):
             break
     return RR
 
-#print(gaussian(DIFFX, dt))
-
-## Loading the input data ##
+#-----------------------
+## Loading the input data
 
 vl = np.genfromtxt('../input_data/data.txt')#, dtype= None, delimiter= None)
 
-#print(vl, type(vl))
-
 #-----------------------
-
 ## Defining the variables and supplying them with data ##
 
 X = vl[0]
@@ -76,11 +64,7 @@ HEIGHT = vl[6]
 
 NG = vl[7]
 
-#print(X, DIFFX, STEPS, dt, basin1, basin2, HEIGHT, NG)
-
-#-----------------------
-
-## 
+## others variables
 
 M=(basin2+basin1)/2
 D=(basin2-basin1)/2
@@ -88,19 +72,6 @@ D=(basin2-basin1)/2
 bounds = 100
 grids = 100000
 width = bounds*1.000000/grids
-
-#print(M, D, width)
-
-#-----------------------
-
-## Checking the values of the loaded data ##
-
-for l in vl:
-    print(l)
-
-#-----------------------
-
-### 
 
 Max = np.zeros(int(NG))
 sigma = np.zeros(int(NG))
@@ -111,17 +82,16 @@ for i in range(int(NG)):
     Max[i] = vl[8+j] # The array takes the value of the reference plus three times ahead
     sigma[i] = vl[9+j]
     GH[i] = vl[10+j]
+
+## Checking the values of the loaded data ##
+
+for l in vl:
+    print(l)
     
-# print(Max)
-# print(sigma)
-# print(GH)  
+print(M, D, width, Max, sigma, GH)
 
 #-----------------------
-
-
-#-----------------------
-
-### Surface calculation ###
+### Surface calculation 
 
 FF=[]
 ES =[]
@@ -156,22 +126,6 @@ X = np.asarray(Hm)
 
 #-----------------------
 
-### Surface ###
-
-import matplotlib.pyplot as plt
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, FF, label = 'Surface_FX') 
-ax.plot(x, EE, label = 'Surface_EE')
-plt.xlabel('Varivel H')
-plt.ylabel('Variveis FX e EE')
-plt.xlim([None, 60])
-plt.ylim([-10, 60])
-plt.legend()
-plt.show()
-
-#-----------------------
-
 ### Trajectory calculation ###
 G = []
 X = []
@@ -197,22 +151,6 @@ G = np.asarray(G)
 
 # total =  np.stack((G, X), axis=-1)
 # np.savetxt("TRAJECTORY", total, fmt="%5.2f")
-
-#-----------------------
-
-### Trajectory ###
-
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, G, label = 'Trajectory')
-plt.xlabel('Varivel T')
-plt.ylabel('Varivel G')
-#plt.xlim([None, 60])
-plt.ylim([10, 60])
-plt.legend()
-plt.show()
-
-#-----------------------
 
 #-----------------------
 
