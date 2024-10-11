@@ -1,9 +1,55 @@
+import numpy as np
+
 #| ### Documentation: https://numpy.org/doc/stable/reference/index.html , https://numpy.org/doc/stable/reference/generated/numpy.savetxt.html, https://docs.python.org/3/library/random.html
 #| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
 
-import numpy as np
+#-----------------------
+
+###
+
+def grad24(M, D, HEIGHT, X):
+    eq1 = (-2*HEIGHT*2*(X-M)/D**2 +4*HEIGHT*(X-M)**3/D**4)
+    return eq1
+
+def E24(M, D, HEIGHT, X):
+    eq2 = (-HEIGHT*2*(X-M)**2/D**2 +HEIGHT*(X-M)**4/D**4)
+    return eq2
+    
+def gradG(Max, sigma, HEIGHT, X):
+    #Sg = [l**2 for l in sigma]
+    eq3 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)*2*(Max-X)/sigma**2 
+    return eq3
+    
+def EG(Max, sigma, HEIGHT, X):
+    #Sg = [l**2 for l in sigma]
+    eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
+    return eq4
+
+
+#print(grad24(M, D, HEIGHT, X), E24(M, D, HEIGHT, X), gradG(Max, sigma, HEIGHT, X), EG(Max, sigma, HEIGHT, X))
 
 #-----------------------
+
+###
+
+def gaussian (DIFFX, dt):
+    # sd is the rms value of the distribution.
+    sd = 2*DIFFX*dt
+    sd = np.sqrt(sd)
+    RR = 0 
+    while True:
+        M1 = np.random.random()
+        M2 = np.random.random()
+        M1 = 2*(M1-0.5)
+        M2 = 2*(M2-0.5)
+        tmp1 = M1**2 + M2**2
+        if tmp1 <= 1.0 and tmp1 >= 0.0:
+            tmp2 = sd*np.sqrt( -2*np.log(tmp1)/tmp1 )
+            RR = M1*tmp2
+            break
+    return RR
+
+#print(gaussian(DIFFX, dt))
 
 ## Loading the input data ##
 
@@ -72,51 +118,6 @@ for i in range(int(NG)):
 
 #-----------------------
 
-###
-
-def grad24(M, D, HEIGHT, X):
-    eq1 = (-2*HEIGHT*2*(X-M)/D**2 +4*HEIGHT*(X-M)**3/D**4)
-    return eq1
-
-def E24(M, D, HEIGHT, X):
-    eq2 = (-HEIGHT*2*(X-M)**2/D**2 +HEIGHT*(X-M)**4/D**4)
-    return eq2
-    
-def gradG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq3 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)*2*(Max-X)/sigma**2 
-    return eq3
-    
-def EG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
-    return eq4
-
-
-#print(grad24(M, D, HEIGHT, X), E24(M, D, HEIGHT, X), gradG(Max, sigma, HEIGHT, X), EG(Max, sigma, HEIGHT, X))
-
-#-----------------------
-
-###
-
-def gaussian (DIFFX, dt):
-    # sd is the rms value of the distribution.
-    sd = 2*DIFFX*dt
-    sd = np.sqrt(sd)
-    RR = 0 
-    while True:
-        M1 = np.random.random()
-        M2 = np.random.random()
-        M1 = 2*(M1-0.5)
-        M2 = 2*(M2-0.5)
-        tmp1 = M1**2 + M2**2
-        if tmp1 <= 1.0 and tmp1 >= 0.0:
-            tmp2 = sd*np.sqrt( -2*np.log(tmp1)/tmp1 )
-            RR = M1*tmp2
-            break
-    return RR
-
-#print(gaussian(DIFFX, dt))
 
 #-----------------------
 
