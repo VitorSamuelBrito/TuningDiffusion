@@ -57,53 +57,56 @@ vl = np.genfromtxt('../input_data/data_sin.txt')#, dtype= None, delimiter= None)
 #-----------------------
 ## Defining the variables and supplying them with data
 
-X = vl[0]
+# x = vl[0] # reaction coordinate 
 
-DIFFX = vl[1]
+D = vl[1] # this the coefficient diffusion
 
-SINM = vl[2] ##  um2/s
+A = vl[2] # crest breadth
 
-SINF=vl[3] ##  um2/s
+lamb =vl[3] # length waves
 
-STEPS = vl[4] ## 100.000.000.000 ##
+STEPS = vl[4] # optimal value 100.000.000.000 
 
-dt = vl[5]
+dt = vl[5] # element infinitesimal of time 
 
 basin1 = vl[6] 
 basin2 = vl[7]
 
 HEIGHT = vl[8]
 
-SLOPE = vl[9]
+SLOPE = vl[9] # responsibly for to add a slope in the function
 
-NG = vl[10]
+dim = vl[10] # dimension of vetor
 
-## others variables 
+## others parametres 
 
-M=(basin2+basin1)/2
-D=(basin2-basin1)/2
+C = (basin2+basin1)/2
+W = (basin2-basin1)/2
 
 bounds = 100
 grids = 100000
 width = bounds*1.000000/grids
 
-Max = np.zeros(int(NG))
-sigma = np.zeros(int(NG))
-GH = np.zeros(int(NG))
+## creating the vetores
 
-for i in range(int(NG)):
+v = np.zeros(int(dim)) # center of function gaussian
+u = np.zeros(int(dim)) # width of function gaussian 
+w = np.zeros(int(dim)) # height of function gaussian
+
+for i in range(int(dim)):
     j = i*3 
-    Max[i] = vl[11+j] # The array takes the value of the reference plus three times ahead
-    sigma[i] = vl[12+j]
-    GH[i] = vl[13+j]
-    
+    v[i] = vl[11+j] # The array takes the value of the reference plus three times ahead
+    u[i] = vl[12+j]
+    w[i] = vl[13+j]
+
 #-----------------------
-## Checking the values of the loaded data 
+## Checking the values of the loaded data
 
 for l in vl:
     print(l)
 
-print(M, D, width, Max, sigma, GH)
+print(C, W, width, v, u, w)
+
 #-----------------------
 ## Surface calculation
 
