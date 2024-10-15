@@ -1,9 +1,11 @@
+## Importing libraries
+
 import numpy as np
 
 #-----------------------
+## Instructions: This code generates diffusive trajectories that represent a folding of a protein. 
 
-#| ### Documentation: https://numpy.org/doc/stable/reference/index.html , https://numpy.org/doc/stable/reference/generated/numpy.savetxt.html, https://docs.python.org/3/library/random.html
-#| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
+## Documentation: https://numpy.org/doc/stable/reference/index.html
 
 #-----------------------
 ## Function of script
@@ -108,72 +110,77 @@ for l in vl:
 print(C, W, width, v, u, w)
 
 #-----------------------
-## Surface calculation
+## Surface calculation 
 
-FF=[]
-ES =[]
-Hm = []
-DDV = []
-DDM=[]
+VX = []
+F = []
+x = []
+DX = []
+DXpartial = []
 
 for i in range(1, int(grids) + 1):
-    H = i*width
+    X = i*width
+    V = 0
     FX = 0
-    EE = 0
     
-    FX += grad24(M, D, HEIGHT, H)
-    EE += E24(M,D,HEIGHT,H)
+    V += Vx(C, W, HEIGHT, X)
+    FX += Fx(C,W,HEIGHT, X)
     
-    for l in range(int(NG)):
+    for l in range(int(dim)):
 
-        FX += gradG(Max[l], sigma[l], GH[l], H)
-        EE += EG(Max[l], sigma[l], GH[l], H)
+        V += VG(v[l], u[l], w[l], X)
+        FX += FG(v[l], u[l], w[l], X)
     
-    EE += SLOPE*H
-    FX += SLOPE
-    DDv = DD(DIFFX, SINM, H, SINF)
-    DDm = DDslope(DIFFX, SINM, H, SINF)
-    
-    FF.append(FX)
-    ES.append(EE)
-    Hm.append(H)
-    DDV.append(DDv)
-    DDM.append(DDm)
-    
-FF = np.asarray(FF)
-EE = np.asarray(ES)
-DDV = np.asarray(DDV)
-X = np.asarray(Hm)
+    V += SLOPE
+    FX += SLOPE*X
 
-total =  np.stack((X, FF,EE, DDV), axis=-1)
-#np.savetxt("SURFACE", total, fmt="%10.6f")
+    DX.append(Dx(D, A, X, lamb))
+    DXpartial.append(Dxpartial(D, A, X, lamb))
+    
+    # DX = Dx(D, A, X, lamb)
+    # DXpartial = Dxpartial(D, A, X, lamb)
+
+    VX.append(V)
+    F.append(FX)
+    x.append(X)
+    
+VX = np.asarray(VX)
+FX = np.asarray(F)
+x = np.asarray(x)
+DX = np.asarray(DX)
+DXpartial = np.asarray(DXpartial)
+
+total =  np.stack((x, FX, VX, DX), axis=-1)
+np.savetxt("SURFACE_SIN", total, fmt="%10.6f")
 
 #-----------------------
 ## Trajectory calculation
 
-G = []
-X = []
+Q = []
+T = []
 
 for i in range(1, int(STEPS) + 1):
     # You must 'correct' with '-1' because python's indexation starting on zero
-    J = int(H/width) - 1
+    J = int(X/width) - 1
 
-    FX =FF[(J)]
-    DX=DDV[(J)]
-    Dslope=DDM[(J)]
+    V = VX[J]
+    D = DX[J]
+    DP = DXpartial[J]
 
-    H += (Dslope-DX*FX)*dt+gaussian(DX,dt);
+    X += (DP-D*V)*dt+gaussian(D,dt)
     
     if i % 100==0:  ## spride ## every 100 values
-        T = dt *i
-        G.append(H)
-        X.append(T)
+        t = dt *i
+        Q.append(X)
+        T.append(t)
     
-X = np.asarray(X)
-G = np.asarray(G)
+Q = np.asarray(Q)
+T = np.asarray(T)
 
-total =  np.stack((X, G), axis=-1)
-#np.savetxt("TRAJECTORY", total, fmt="%5.2f")
-#np.savetxt("trajectory_file", G, fmt="%5.2f")
+# total =  np.stack((T, Q), axis=-1)
+# np.savetxt("TRAJECTORY_SIN", total, fmt="%5.2f")
+
+invt =  np.stack((Q, T), axis=-1)
+np.savetxt("TRAJECTORY_SIN", invt, fmt="%5.2f")
 
 #-----------------------
