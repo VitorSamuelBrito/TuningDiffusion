@@ -4,29 +4,27 @@ import numpy as np
 #| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
 
 #-----------------------
-## functions of script 
+## Function of script
 
-def grad24(M, D, HEIGHT, X):
-    eq1 = (-2*HEIGHT*2*(X-M)/D**2 +4*HEIGHT*(X-M)**3/D**4)
-    return eq1
+def Vx(C, W, HEIGHT, x): 
+    Vx = (-2*HEIGHT*2*(x-C)/W**2 +4*HEIGHT*(x-C)**3/W**4)
+    return Vx
 
-def E24(M, D, HEIGHT, X):
-    eq2 = (-HEIGHT*2*(X-M)**2/D**2 +HEIGHT*(X-M)**4/D**4)
-    return eq2
+def Fx(C, W, HEIGHT, x): 
+    Fx = (-HEIGHT*2*(x-C)**2/W**2 +HEIGHT*(x-C)**4/W**4)
+    return Fx
     
-def gradG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq3 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)*2*(Max-X)/sigma**2 
-    return eq3
+def VG(v, u, HEIGHT, x):
+    VG = HEIGHT*np.exp(-(x-v)**2/u**2)*2*(v-x)/u**2 
+    return VG
     
-def EG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
-    return eq4
+def FG(v, u, HEIGHT, x):
+    FG = HEIGHT*np.exp(-(x-v)**2/u**2)
+    return FG
 
-def gaussian (DIFFX, dt):
+def gaussian(D, dt):
     # sd is the rms value of the distribution.
-    sd = 2*DIFFX*dt
+    sd = 2*D*dt
     sd = np.sqrt(sd)
     RR = 0 
     while True:
