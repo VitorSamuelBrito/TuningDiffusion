@@ -92,6 +92,8 @@ for i in range(int(dim)):
 for l in vl:
     print(l)
 
+print(C, W, width, v, u, w)    
+    
 #-----------------------
 ## Surface calculation ##
 
