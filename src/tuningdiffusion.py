@@ -44,49 +44,49 @@ def gaussian(D, dt):
 
 vl = np.genfromtxt('../input_data/data.txt')#, dtype= None, delimiter= None)
 
-#-----------------------
 ## Defining the variables and supplying them with data
 
-# X = vl[0] # the variable not is necessary
+# x = vl[0] # reaction coordinate 
 
-DIFFX = vl[1]
+D = vl[1] # this the coefficient diffusion
 
-STEPS = vl[2]
+STEPS = vl[2] # 100.000.000.000 
 
-dt = vl[3]
+dt = vl[3] # element infinitesimal of time 
 
 basin1 = vl[4] 
 basin2 = vl[5]
 
 HEIGHT = vl[6]
 
-NG = vl[7]
+dim = vl[7] # dimension of vetor
 
-## others variables
+## others parametres 
 
-M=(basin2+basin1)/2
-D=(basin2-basin1)/2
+C=(basin2+basin1)/2
+W=(basin2-basin1)/2
 
 bounds = 100
 grids = 100000
 width = bounds*1.000000/grids
 
-Max = np.zeros(int(NG))
-sigma = np.zeros(int(NG))
-GH = np.zeros(int(NG))
+## creating the vetores
 
-for i in range(int(NG)):
-    j = i*3
-    Max[i] = vl[8+j] # The array takes the value of the reference plus three times ahead
-    sigma[i] = vl[9+j]
-    GH[i] = vl[10+j]
+v = np.zeros(int(dim)) # center of function gaussian
+u = np.zeros(int(dim)) # width of function gaussian 
+w = np.zeros(int(dim)) # height of function gaussian
 
-## Checking the values of the loaded data ##
+for i in range(int(dim)):
+    j = i*3 
+    v[i] = vl[8+j] # The array takes the value of the reference plus three times ahead
+    u[i] = vl[9+j]
+    w[i] = vl[10+j]
+
+#-----------------------
+## Checking the values of the loaded data
 
 for l in vl:
     print(l)
-    
-print(M, D, width, Max, sigma, GH)
 
 #-----------------------
 ### Surface calculation 
