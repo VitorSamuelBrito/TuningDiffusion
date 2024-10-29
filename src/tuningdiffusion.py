@@ -1,7 +1,11 @@
+## Importing libraries
+
 import numpy as np
 
-#| ### Documentation: https://numpy.org/doc/stable/reference/index.html , https://numpy.org/doc/stable/reference/generated/numpy.savetxt.html, https://docs.python.org/3/library/random.html
-#| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
+#-----------------------
+# Instructions: This code generates diffusive trajectories that represent a folding of a protein. 
+
+# Documentation: https://numpy.org/doc/stable/reference/index.html
 
 #-----------------------
 ## Function of script
@@ -89,66 +93,63 @@ for l in vl:
     print(l)
 
 #-----------------------
-### Surface calculation 
+## Surface calculation ##
 
-FF=[]
-ES =[]
-Hm = []
+V = []
+F = []
+x = []
 
 for i in range(1, int(grids) + 1):
-    H = i*width
+    X = i*width
+    VX = 0
     FX = 0
-    EE = 0
-    FX += grad24(M, D, HEIGHT, H)
-    EE += E24(M,D,HEIGHT,H)
     
-    for l in range(int(NG)):
-        FX += gradG(Max[l], sigma[l], GH[l], H)
-        EE += EG(Max[l], sigma[l], GH[l], H)
-        
-    FF.append(FX)
-    ES.append(EE)
-    Hm.append(H)
+    VX += Vx(C, W, HEIGHT, X)
+    FX += Fx(C,W,HEIGHT, X)
+
+    for l in range(int(dim)):
+
+        VX += VG(v[l], u[l], w[l], X)
+        FX += FG(v[l], u[l], w[l], X)
+
+    V.append(VX)
+    F.append(FX)
+    x.append(X)
     
-FF = np.asarray(FF)
-EE = np.asarray(ES)
-X = np.asarray(Hm)
+V = np.asarray(V)
+FX = np.asarray(F)
+x = np.asarray(x)
 
-
-# np.savetxt('SURFACE_X', X, fmt="%10.6f")
-# np.savetxt('SURFACE_EE', EE, fmt="%10.6f")
-# np.savetxt('SURFACE_FX', FF, fmt="%10.6f")
-
-# total =  np.stack((X, EE, FF), axis=-1)
-# np.savetxt("SURFACE", total, fmt="%10.6f")
+total =  np.stack((x, FX, V), axis=-1)
+np.savetxt("SURFACE", total, fmt="%10.6f")
 
 #-----------------------
 
-### Trajectory calculation ###
-G = []
-X = []
+## Trajectory calculation ###
 
+Q = []
+T = []
 
 for i in range(1, int(STEPS) + 1):
     # You must 'correct' with '-1' because python's indexation starting on zero
-    J = int(H/width) - 1
-    FX =FF[J] 
-    H += -DIFFX*dt*FX+gaussian(DIFFX,dt)
+    J = int(X/width) - 1
+
+    VX = V[J]
+    X += (-D*VX)*dt+gaussian(D,dt)
     
-    if i % 100==0:  ## stride every 100 values
-        T = dt *i
-        G.append(H)
-        X.append(T)
+    if i % 100==0:  ## spride ## every 100 values
+        t = dt*i
+        Q.append(X)
+        T.append(t)
     
-X = np.asarray(X)
-G = np.asarray(G)
+Q = np.asarray(Q)
+T = np.asarray(T)
 
-
-# np.savetxt('TRAJECTORY_Y', G, fmt="%5.2f" )
-# np.savetxt('TRAJECTORY_X', X, fmt="%5.2f" )
-
-# total =  np.stack((G, X), axis=-1)
+# total =  np.stack((T, Q), axis=-1)
 # np.savetxt("TRAJECTORY", total, fmt="%5.2f")
+
+invt =  np.stack((Q, T), axis=-1)
+np.savetxt("TRAJECTORY", invt, fmt="%5.2f")
 
 #-----------------------
 
