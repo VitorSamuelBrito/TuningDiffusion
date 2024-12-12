@@ -1,122 +1,43 @@
-#| ### Documentation: https://numpy.org/doc/stable/reference/index.html , https://numpy.org/doc/stable/reference/generated/numpy.savetxt.html, https://docs.python.org/3/library/random.html
-#| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
+## Importing libraries
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 #-----------------------
+## Instructions: This code generates diffusive trajectories that represent a folding of a protein. 
 
-## Loading the input data ##
-
-vl = np.genfromtxt('../input_data/data_sin.txt')#, dtype= None, delimiter= None)
-
-# print(vl, type(vl))
+## Documentation: https://numpy.org/doc/stable/reference/index.html
 
 #-----------------------
+## Function of script
 
-## Defining the variables and supplying them with data ##
+def Dx(D, A, x, lamb):
+    Dx = D+A*np.sin(x/lamb)
+    return Dx
 
-X = vl[0]
+def Dxpartial(D, A, x, lamb):
+    partial = A/lamb*np.cos(x/lamb)
+    return partial
 
-DIFFX = vl[1]
+def Vx(C, W, HEIGHT, x): #ainda não defini se irei mudar o M e o D
+    Vx = (-2*HEIGHT*2*(x-C)/W**2 +4*HEIGHT*(x-C)**3/W**4)
+    return Vx
 
-SINM = vl[2] ##  um2/s
-
-SINF=vl[3] ##  um2/s
-
-STEPS = vl[4] ## 100.000.000.000 ##
-
-dt = vl[5]
-
-basin1 = vl[6] 
-basin2 = vl[7]
-
-HEIGHT = vl[8]
-
-SLOPE = vl[9]
-
-NG = vl[10]
-
-#print(X, DIFFX, SINM, SINF, STEPS, dt, basin1, basin2, HEIGHT, SLOPE, NG)
-
-#-----------------------
-
-## 
-
-M=(basin2+basin1)/2
-D=(basin2-basin1)/2
-
-bounds = 100
-grids = 100000
-width = bounds*1.000000/grids
-
-# print(M, D, width)
-
-#-----------------------
-
-## Checking the values of the loaded data ##
-
-for l in vl:
-    print(l)
-
-#-----------------------
-
-### 
-
-Max = np.zeros(int(NG))
-sigma = np.zeros(int(NG))
-GH = np.zeros(int(NG))
-
-for i in range(int(NG)):
-    j = i*3 
-    Max[i] = vl[11+j] # The array takes the value of the reference plus three times ahead
-    sigma[i] = vl[12+j]
-    GH[i] = vl[13+j]
+def Fx(C, W, HEIGHT, x): #ainda não defini se irei mudar o M e o D
+    Fx = (-HEIGHT*2*(x-C)**2/W**2 +HEIGHT*(x-C)**4/W**4)
+    return Fx
     
-# print(Max)
-# print(sigma)
-# print(GH)
-
-#-----------------------
-
-###
-
-def DD(DIFFX, SINM, X, SINF):
-    eqd = DIFFX+SINM*np.sin(X/SINF)
-    return eqd
-
-def DDslope(DIFFX, SINM, X, SINF):
-    eqs = SINM/SINF*np.cos(X/SINF)
-    return eqs
-
-def grad24(M, D, HEIGHT, X):
-    eq1 = (-2*HEIGHT*2*(X-M)/D**2 +4*HEIGHT*(X-M)**3/D**4)
-    return eq1
-
-def E24(M, D, HEIGHT, X):
-    eq2 = (-HEIGHT*2*(X-M)**2/D**2 +HEIGHT*(X-M)**4/D**4)
-    return eq2
+def VG(v, u, HEIGHT, x):
+    VG = HEIGHT*np.exp(-(x-v)**2/u**2)*2*(v-x)/u**2 
+    return VG
     
-def gradG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq3 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)*2*(Max-X)/sigma**2 
-    return eq3
-    
-def EG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
-    return eq4
+def FG(v, u, HEIGHT, x):
+    FG = HEIGHT*np.exp(-(x-v)**2/u**2)
+    return FG
 
- 
-#print(DD(DIFFX, SINM, X, SINF), DDslope(DIFFX, SINM, X, SINF), grad24(M, D, HEIGHT, X), E24(M, D, HEIGHT, X), gradG(Max, sigma, HEIGHT, X), EG(Max, sigma, HEIGHT, X))
-
-#-----------------------
-
-###
-
-def gaussian (DIFFX, dt):
+def gaussian (D, dt):
     # sd is the rms value of the distribution.
-    sd = np.sqrt(2*DIFFX*dt)
+    sd = 2*D*dt
+    sd = np.sqrt(sd)
     RR = 0 
     while True:
         M1 = np.random.random()
@@ -130,108 +51,136 @@ def gaussian (DIFFX, dt):
             break
     return RR
 
-#print(gaussian(DIFFX, dt))
+#-----------------------
+## Loading the input data
+
+vl = np.genfromtxt('../input_data/data_sin.txt')#, dtype= None, delimiter= None)
 
 #-----------------------
+## Defining the variables and supplying them with data
 
-### Surface calculation ###
+# x = vl[0] # reaction coordinate 
 
-FF=[]
-ES =[]
-Hm = []
-DDV = []
-DDM=[]
+D = vl[1] # this the coefficient diffusion
+
+A = vl[2] # crest breadth
+
+lamb =vl[3] # length waves
+
+STEPS = vl[4] # optimal value 100.000.000.000 
+
+dt = vl[5] # element infinitesimal of time 
+
+basin1 = vl[6] 
+basin2 = vl[7]
+
+HEIGHT = vl[8]
+
+SLOPE = vl[9] # responsibly for to add a slope in the function
+
+dim = vl[10] # dimension of vetor
+
+## others parametres 
+
+C = (basin2+basin1)/2
+W = (basin2-basin1)/2
+
+bounds = 100
+grids = 100000
+width = bounds*1.000000/grids
+
+## creating the vetores
+
+v = np.zeros(int(dim)) # center of function gaussian
+u = np.zeros(int(dim)) # width of function gaussian 
+w = np.zeros(int(dim)) # height of function gaussian
+
+for i in range(int(dim)):
+    j = i*3 
+    v[i] = vl[11+j] # The array takes the value of the reference plus three times ahead
+    u[i] = vl[12+j]
+    w[i] = vl[13+j]
+
+#-----------------------
+## Checking the values of the loaded data
+
+for l in vl:
+    print(l)
+
+print(C, W, width, v, u, w)
+
+#-----------------------
+## Surface calculation 
+
+VX = []
+F = []
+x = []
+DX = []
+DXpartial = []
 
 for i in range(1, int(grids) + 1):
-    H = i*width
+    X = i*width
+    V = 0
     FX = 0
-    EE = 0
     
-    FX += grad24(M, D, HEIGHT, H)
-    EE += E24(M,D,HEIGHT,H)
+    V += Vx(C, W, HEIGHT, X)
+    FX += Fx(C,W,HEIGHT, X)
     
-    for l in range(int(NG)):
+    for l in range(int(dim)):
 
-        FX += gradG(Max[l], sigma[l], GH[l], H)
-        EE += EG(Max[l], sigma[l], GH[l], H)
+        V += VG(v[l], u[l], w[l], X)
+        FX += FG(v[l], u[l], w[l], X)
     
-    EE += SLOPE*H
-    FX += SLOPE
-    DDv = DD(DIFFX, SINM, H, SINF)
-    DDm = DDslope(DIFFX, SINM, H, SINF)
-    
-    FF.append(FX)
-    ES.append(EE)
-    Hm.append(H)
-    DDV.append(DDv)
-    DDM.append(DDm)
-    
-FF = np.asarray(FF)
-EE = np.asarray(ES)
-DDV = np.asarray(DDV)
-X = np.asarray(Hm)
+    V += SLOPE
+    FX += SLOPE*X
 
-#total =  np.stack((X, FF,EE, DDV), axis=-1)
-#np.savetxt("SURFACE", total, fmt="%10.6f")
+    DX.append(Dx(D, A, X, lamb))
+    DXpartial.append(Dxpartial(D, A, X, lamb))
+    
+    # DX = Dx(D, A, X, lamb)
+    # DXpartial = Dxpartial(D, A, X, lamb)
+
+    VX.append(V)
+    F.append(FX)
+    x.append(X)
+    
+VX = np.asarray(VX)
+FX = np.asarray(F)
+x = np.asarray(x)
+DX = np.asarray(DX)
+DXpartial = np.asarray(DXpartial)
+
+total =  np.stack((x, FX, VX, DX), axis=-1)
+np.savetxt("SURFACE_SIN", total, fmt="%10.6f")
 
 #-----------------------
+## Trajectory calculation
 
-### Surface ###
-
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, FF, label = 'Surface_FX') 
-ax.plot(x, EE, label = 'Surface_EE')
-ax.plot(x, DDV, label = 'Surface_DDv')
-plt.xlabel('Varivel H')
-plt.ylabel('Variveis FX e EE')
-plt.xlim([None, 100])
-plt.ylim([-20, 100])
-plt.legend()
-plt.show()
-
-#-----------------------
-
-### Trajectory calculation ###
-
-G = []
-X = []
+Q = []
+T = []
 
 for i in range(1, int(STEPS) + 1):
     # You must 'correct' with '-1' because python's indexation starting on zero
-    J = int(H/width) - 1
+    J = int(X/width) - 1
 
-    FX =FF[(J)]
-    DX=DDV[(J)]
-    Dslope=DDM[(J)]
+    V = VX[J]
+    D = DX[J]
+    DP = DXpartial[J]
 
-    H += (Dslope-DX*FX)*dt+gaussian(DX,dt);
+    X += (DP-D*V)*dt+gaussian(D,dt)
     
     if i % 100==0:  ## spride ## every 100 values
-        T = dt *i
-        G.append(H)
-        X.append(T)
+        t = dt *i
+        Q.append(X)
+        T.append(t)
     
-X = np.asarray(X)
-G = np.asarray(G)
+Q = np.asarray(Q)
+T = np.asarray(T)
 
-#total =  np.stack((X, G), axis=-1)
-#np.savetxt("TRAJECTORY", total, fmt="%5.2f")
+# total =  np.stack((T, Q), axis=-1)
+# np.savetxt("TRAJECTORY_SIN", total, fmt="%5.2f")
 
-#-----------------------
-
-### Trajectory ###
-
-x = X 
-fig, ax = plt.subplots()
-ax.plot(x, G, label = 'Trajectory')
-plt.xlabel('Varivel T')
-plt.ylabel('Varivel G')
-# plt.xlim([None, 60])
-plt.ylim([0, 80])
-plt.legend()
-plt.show()
-
-#-----------------------
+invt =  np.stack((Q, T), axis=-1)
+np.savetxt("TRAJECTORY_SIN", invt, fmt="%5.2f")
 
 #-----------------------
