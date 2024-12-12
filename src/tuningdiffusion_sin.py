@@ -8,48 +8,11 @@ import numpy as np
 ## Documentation: https://numpy.org/doc/stable/reference/index.html
 
 #-----------------------
-## Function of script
 
-def Dx(D, A, x, lamb):
-    Dx = D+A*np.sin(x/lamb)
-    return Dx
+# Importing specific functions from library diffusion
 
-def Dxpartial(D, A, x, lamb):
-    partial = A/lamb*np.cos(x/lamb)
-    return partial
+import library_diffusion as libdiff
 
-def Vx(C, W, HEIGHT, x): #ainda não defini se irei mudar o M e o D
-    Vx = (-2*HEIGHT*2*(x-C)/W**2 +4*HEIGHT*(x-C)**3/W**4)
-    return Vx
-
-def Fx(C, W, HEIGHT, x): #ainda não defini se irei mudar o M e o D
-    Fx = (-HEIGHT*2*(x-C)**2/W**2 +HEIGHT*(x-C)**4/W**4)
-    return Fx
-    
-def VG(v, u, HEIGHT, x):
-    VG = HEIGHT*np.exp(-(x-v)**2/u**2)*2*(v-x)/u**2 
-    return VG
-    
-def FG(v, u, HEIGHT, x):
-    FG = HEIGHT*np.exp(-(x-v)**2/u**2)
-    return FG
-
-def gaussian (D, dt):
-    # sd is the rms value of the distribution.
-    sd = 2*D*dt
-    sd = np.sqrt(sd)
-    RR = 0 
-    while True:
-        M1 = np.random.random()
-        M2 = np.random.random()
-        M1 = 2*(M1-0.5)
-        M2 = 2*(M2-0.5)
-        tmp1 = M1**2 + M2**2
-        if tmp1 <= 1.0 and tmp1 >= 0.0:
-            tmp2 = sd*np.sqrt( -2*np.log(tmp1)/tmp1 )
-            RR = M1*tmp2
-            break
-    return RR
 
 #-----------------------
 ## Loading the input data
@@ -123,22 +86,22 @@ for i in range(1, int(grids) + 1):
     V = 0
     FX = 0
     
-    V += Vx(C, W, HEIGHT, X)
-    FX += Fx(C,W,HEIGHT, X)
+    V += libdiff.Vx(C, W, HEIGHT, X)
+    FX += libdiff.Fx(C,W,HEIGHT, X)
     
     for l in range(int(dim)):
 
-        V += VG(v[l], u[l], w[l], X)
-        FX += FG(v[l], u[l], w[l], X)
+        V += libdiff.VG(v[l], u[l], w[l], X)
+        FX += libdiff.FG(v[l], u[l], w[l], X)
     
     V += SLOPE
     FX += SLOPE*X
 
-    DX.append(Dx(D, A, X, lamb))
-    DXpartial.append(Dxpartial(D, A, X, lamb))
+    DX.append(libdiff.Dxsin(D, A, X, lamb))
+    DXpartial.append(libdiff.Dxsinpartial(D, A, X, lamb))
     
-    # DX = Dx(D, A, X, lamb)
-    # DXpartial = Dxpartial(D, A, X, lamb)
+    # DX = libdiff.Dxsin(D, A, X, lamb)
+    # DXpartial = libdiff.Dxsinpartial(D, A, X, lamb)
 
     VX.append(V)
     F.append(FX)
@@ -167,7 +130,7 @@ for i in range(1, int(STEPS) + 1):
     D = DX[J]
     DP = DXpartial[J]
 
-    X += (DP-D*V)*dt+gaussian(D,dt)
+    X += (DP-D*V)*dt+libdiff.gaussian(D,dt)
     
     if i % 100==0:  ## spride ## every 100 values
         t = dt *i
