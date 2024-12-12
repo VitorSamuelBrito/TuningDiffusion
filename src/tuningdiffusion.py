@@ -1,217 +1,127 @@
-#| ### Documentation: https://numpy.org/doc/stable/reference/index.html , https://numpy.org/doc/stable/reference/generated/numpy.savetxt.html, https://docs.python.org/3/library/random.html
-#| #### Instructions: This code generates diffusive trajectories that represent a folding of a protein.
+## Importing libraries
 
 import numpy as np
 
 #-----------------------
+# Instructions: This code generates diffusive trajectories that represent a folding of a protein. 
 
-## Loading the input data ##
-
-vl = np.genfromtxt('../input_data/data.txt')#, dtype= None, delimiter= None)
-
-#print(vl, type(vl))
+# Documentation: https://numpy.org/doc/stable/reference/index.html
 
 #-----------------------
 
-## Defining the variables and supplying them with data ##
+# Importing specific functions from library diffusion
 
-X = vl[0]
+import library_diffusion as libdiff
 
-DIFFX = vl[1]
+#-----------------------
+## Loading the input data
 
-STEPS = vl[2]
+vl = np.genfromtxt('../input_data/data.txt')#, dtype= None, delimiter= None)
 
-dt = vl[3]
+## Defining the variables and supplying them with data
+
+# x = vl[0] # reaction coordinate 
+
+D = vl[1] # this the coefficient diffusion
+
+STEPS = vl[2] # 100.000.000.000 
+
+dt = vl[3] # element infinitesimal of time 
 
 basin1 = vl[4] 
 basin2 = vl[5]
 
 HEIGHT = vl[6]
 
-NG = vl[7]
+dim = vl[7] # dimension of vetor
 
-#print(X, DIFFX, STEPS, dt, basin1, basin2, HEIGHT, NG)
+## others parametres 
 
-#-----------------------
-
-## 
-
-M=(basin2+basin1)/2
-D=(basin2-basin1)/2
+C=(basin2+basin1)/2
+W=(basin2-basin1)/2
 
 bounds = 100
 grids = 100000
 width = bounds*1.000000/grids
 
-#print(M, D, width)
+## creating the vetores
+
+v = np.zeros(int(dim)) # center of function gaussian
+u = np.zeros(int(dim)) # width of function gaussian 
+w = np.zeros(int(dim)) # height of function gaussian
+
+for i in range(int(dim)):
+    j = i*3 
+    v[i] = vl[8+j] # The array takes the value of the reference plus three times ahead
+    u[i] = vl[9+j]
+    w[i] = vl[10+j]
 
 #-----------------------
-
-## Checking the values of the loaded data ##
+## Checking the values of the loaded data
 
 for l in vl:
     print(l)
 
-#-----------------------
-
-### 
-
-Max = np.zeros(int(NG))
-sigma = np.zeros(int(NG))
-GH = np.zeros(int(NG))
-
-for i in range(int(NG)):
-    j = i*3
-    Max[i] = vl[8+j] # The array takes the value of the reference plus three times ahead
-    sigma[i] = vl[9+j]
-    GH[i] = vl[10+j]
+print(C, W, width, v, u, w)    
     
-# print(Max)
-# print(sigma)
-# print(GH)  
-
 #-----------------------
+## Surface calculation ##
 
-###
-
-def grad24(M, D, HEIGHT, X):
-    eq1 = (-2*HEIGHT*2*(X-M)/D**2 +4*HEIGHT*(X-M)**3/D**4)
-    return eq1
-
-def E24(M, D, HEIGHT, X):
-    eq2 = (-HEIGHT*2*(X-M)**2/D**2 +HEIGHT*(X-M)**4/D**4)
-    return eq2
-    
-def gradG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq3 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)*2*(Max-X)/sigma**2 
-    return eq3
-    
-def EG(Max, sigma, HEIGHT, X):
-    #Sg = [l**2 for l in sigma]
-    eq4 = HEIGHT*np.exp(-(X-Max)**2/sigma**2)
-    return eq4
-
-
-#print(grad24(M, D, HEIGHT, X), E24(M, D, HEIGHT, X), gradG(Max, sigma, HEIGHT, X), EG(Max, sigma, HEIGHT, X))
-
-#-----------------------
-
-###
-
-def gaussian (DIFFX, dt):
-    # sd is the rms value of the distribution.
-    sd = 2*DIFFX*dt
-    sd = np.sqrt(sd)
-    RR = 0 
-    while True:
-        M1 = np.random.random()
-        M2 = np.random.random()
-        M1 = 2*(M1-0.5)
-        M2 = 2*(M2-0.5)
-        tmp1 = M1**2 + M2**2
-        if tmp1 <= 1.0 and tmp1 >= 0.0:
-            tmp2 = sd*np.sqrt( -2*np.log(tmp1)/tmp1 )
-            RR = M1*tmp2
-            break
-    return RR
-
-#print(gaussian(DIFFX, dt))
-
-#-----------------------
-
-### Surface calculation ###
-
-FF=[]
-ES =[]
-Hm = []
+V = []
+F = []
+x = []
 
 for i in range(1, int(grids) + 1):
-    H = i*width
+    X = i*width
+    VX = 0
     FX = 0
-    EE = 0
-    FX += grad24(M, D, HEIGHT, H)
-    EE += E24(M,D,HEIGHT,H)
     
-    for l in range(int(NG)):
-        FX += gradG(Max[l], sigma[l], GH[l], H)
-        EE += EG(Max[l], sigma[l], GH[l], H)
-        
-    FF.append(FX)
-    ES.append(EE)
-    Hm.append(H)
+    VX += libdiff.Vx(C, W, HEIGHT, X)
+    FX += libdiff.Fx(C,W,HEIGHT, X)
+
+    for l in range(int(dim)):
+
+        VX += libdiff.VG(v[l], u[l], w[l], X)
+        FX += libdiff.FG(v[l], u[l], w[l], X)
+
+    V.append(VX)
+    F.append(FX)
+    x.append(X)
     
-FF = np.asarray(FF)
-EE = np.asarray(ES)
-X = np.asarray(Hm)
+V = np.asarray(V)
+FX = np.asarray(F)
+x = np.asarray(x)
 
-
-# np.savetxt('SURFACE_X', X, fmt="%10.6f")
-# np.savetxt('SURFACE_EE', EE, fmt="%10.6f")
-# np.savetxt('SURFACE_FX', FF, fmt="%10.6f")
-
-total =  np.stack((X, EE, FF), axis=-1)
+total =  np.stack((x, FX, V), axis=-1)
 np.savetxt("SURFACE", total, fmt="%10.6f")
 
 #-----------------------
 
-### Surface ###
+## Trajectory calculation ###
 
-#import matplotlib.pyplot as plt
-#x = X 
-#fig, ax = plt.subplots()
-#ax.plot(x, FF, label = 'Surface_FX') 
-#ax.plot(x, EE, label = 'Surface_EE')
-#plt.xlabel('Varivel H')
-#plt.ylabel('Variveis FX e EE')
-#plt.xlim([None, 60])
-#plt.ylim([-10, 60])
-#plt.legend()
-#plt.show()
-
-#-----------------------
-
-### Trajectory calculation ###
-G = []
-X = []
-
+Q = []
+T = []
 
 for i in range(1, int(STEPS) + 1):
     # You must 'correct' with '-1' because python's indexation starting on zero
-    J = int(H/width) - 1
-    FX =FF[J] 
-    H += -DIFFX*dt*FX+gaussian(DIFFX,dt)
+    J = int(X/width) - 1
+
+    VX = V[J]
+    X += (-D*VX)*dt+libdiff.gaussian(D,dt)
     
-    if i % 100==0:  ## stride every 100 values
-        T = dt *i
-        G.append(H)
-        X.append(T)
+    if i % 100==0:  ## spride ## every 100 values
+        t = dt*i
+        Q.append(X)
+        T.append(t)
     
-X = np.asarray(X)
-G = np.asarray(G)
+Q = np.asarray(Q)
+T = np.asarray(T)
 
+# total =  np.stack((T, Q), axis=-1)
+# np.savetxt("TRAJECTORY", total, fmt="%5.2f")
 
-# np.savetxt('TRAJECTORY_Y', G, fmt="%5.2f" )
-# np.savetxt('TRAJECTORY_X', X, fmt="%5.2f" )
-
-total =  np.stack((G, X), axis=-1)
-np.savetxt("TRAJECTORY", total, fmt="%5.2f")
-
-#-----------------------
-
-### Trajectory ###
-
-#x = X 
-#fig, ax = plt.subplots()
-#ax.plot(x, G, label = 'Trajectory')
-#plt.xlabel('Varivel T')
-#plt.ylabel('Varivel G')
-#plt.xlim([None, 60])
-#plt.ylim([10, 60])
-#plt.legend()
-#plt.show()
-
-#-----------------------
+invt =  np.stack((Q, T), axis=-1)
+np.savetxt("TRAJECTORY", invt, fmt="%5.2f")
 
 #-----------------------
 
