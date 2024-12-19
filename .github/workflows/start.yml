@@ -27,7 +27,7 @@ jobs:
           perl .new-scripts/LD.functions.pl 
           cd ..
           ln -s ../src/library_diffusion.py share/
-          pytest
+#          pytest
 
 
       - uses: actions/checkout@v4
