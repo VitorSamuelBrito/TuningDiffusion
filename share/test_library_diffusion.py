@@ -58,17 +58,24 @@ def cartesian(arrays, out=None):
             out[j*m:(j+1)*m, 1:] = out[0:m, 1:]
     return out
 
-# To be used in all comparisons
-threshold = 0.001
-# loading the sequence used to generate data
-sequence = np.genfromtxt('share/sequence.dat')
-# generate the vector used as input
-input = cartesian([sequence, sequence, sequence, sequence])
+## To be used in all comparisons
+#threshold = 0.001
+## loading the sequence used to generate data
+#sequence = np.genfromtxt('share/sequence.dat')
+## generate the vector used as input
+#input = cartesian([sequence, sequence, sequence, sequence])
 
 
 ## comparing each function with respective perl results
 def test_Dxsin():
     """Function to test the Dxsin function from library_diffusion"""
+    ## To be used in all comparisons
+    threshold = 0.001
+    ## loading the sequence used to generate data
+    sequence = np.genfromtxt('share/sequence.dat')
+    ## generate the vector used as input
+    input = cartesian([sequence, sequence, sequence, sequence])
+
     # loading the data from DDsin generated with perl
     DDsin_data = np.genfromtxt('share/DDsin_test.dat')
     # calculating the results
