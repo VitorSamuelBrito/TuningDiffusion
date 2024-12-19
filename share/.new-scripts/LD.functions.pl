@@ -88,7 +88,7 @@ foreach my $func ( @funcs ) {
 
 sub DDsin {
 	my($DIFFX, $SINM, $X, $SINF) = @_;
-	$DD=$DIFFX+$SINM*exp(-$X/$SINF);
+	$DD=$DIFFX+$SINM*sin($X/$SINF);
 	return $DD;
 
 }
@@ -96,7 +96,7 @@ sub DDsin {
 
 sub DDsinslope {
         my($DIFFX, $SINM, $X, $SINF) = @_;
-        $DDslope=(-$SINM/$SINF)*exp(-$X/$SINF);
+        $DDslope=$SINM/$SINF*cos($X/$SINF);
         return $DDslope;
 
 }
