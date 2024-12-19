@@ -4,6 +4,7 @@ __author__ = "Vitor Samuel Alves de Brito"
 __version__ = "0.0.1"
 __email__ = "vitorsamuelbr@gmail.com"
 
+import numpy as np
 
 ## Script functions
 
