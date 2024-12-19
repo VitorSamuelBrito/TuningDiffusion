@@ -1,4 +1,4 @@
-name: Notebook creation
+name: Library functions test
 
 on: [push]
 
