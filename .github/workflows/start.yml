@@ -26,6 +26,7 @@ jobs:
           cd share/
           perl .new-scripts/LD.functions.pl 
           cd ..
+          ls -l
           ln -s ../src/library_diffusion.py share/
 #          pytest
 
