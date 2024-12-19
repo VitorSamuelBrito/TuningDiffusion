@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 ## Functions extracted from original files.
-## Data generated with this script will be used to test the python funcitons
+## Data generated with this script will be used to test the python functions
 
 
 ## Sequence created without zero to avoid division by zero errors
@@ -14,14 +14,15 @@ my @unsorted_sequence;
 my $samples = 20;
 
 ## Creating the array sequence to be used in all tests
+## Some functions can't take zero (illegal division), variable mustn't have it
 for (my $i = 1; $i <= $samples; $i++){
-	$random = rand(100) - 50;
+	my $random = rand(100) - 50;
 	push(@unsorted_sequence, $random);
 }
 
 # Sorting numbers with use of 
 # spaceship operator 
-@sequence = sort { $a <=> $b } @unsorted_sequence; 
+my @sequence = sort { $a <=> $b } @unsorted_sequence; 
 
 
 ## Quick test: printing the array 'unsorted_sequence'
@@ -31,12 +32,12 @@ for (my $i = 1; $i <= $samples; $i++){
 
 ## Quick test: printing (actually now saving) the array 'sequence'
 ## to be used in all tests
-open(initialfile,">sequence.dat") or die "can\'t open new file\n";
+open(INITIALFILE,">sequence.dat") or die "can\'t open new file\n";
 foreach $a (@sequence) {
 #   print "value of a: $a\n";
-	printf initialfile ("%10.6f\n", $a);
+	printf INITIALFILE ("%10.6f\n", $a);
 }
-
+close(INITIALFILE) or  warn $!;
 
 ## Quick test: printing the results for a function
 #foreach $a (@sequence) {
@@ -44,20 +45,44 @@ foreach $a (@sequence) {
 #	printf ("value of a and result : %5.2f %5.2f\n", $a, $result);
 #}
 
+## Creating a dispatch table to call the functions later
+my %call_func = (
+        'DDsin' => \&DDsin,
+        'DDsinslope' => \&DDsinslope,
+        'DDexp' => \&DDexp,
+        'DDexpslope' => \&DDexpslope,
+        'grad24' => \&grad24,
+        'E24' => \&E24,
+        'gradG' => \&gradG,
+        'EG' => \&EG
+);
+
+## Creating an array with the functions' name
+my @funcs = qw (DDsin DDsinslope DDexp DDexpslope grad24 E24 gradG EG);
+
+## Test on how to call the functions
+#foreach my $func ( @funcs ) {
+#        print "$func: ";
+#        print $call_func{$func}->(1, 2, 3, 4), "\n";
+#}
 
 
-## Creating the files
-open(file,">test.dat") or die "can\'t open new file\n";
-foreach $a (@sequence){
-	foreach $b (@sequence){
-		foreach $c (@sequence){
-			foreach $d (@sequence){
-				$result = DDsin($a, $b, $c, $d);
-				printf file ("%10.6f %10.6f %10.6f %10.6f %10.6f\n", $a, $b, $c, $d, $result);
-			}
-		}
-	}
+## Creating the test files
+foreach my $func ( @funcs ) {
+        open(FILE,">${func}_test.dat") or die "can\'t open new file\n";
+        foreach my $a (@sequence){
+        	foreach my $b (@sequence){
+        		foreach my $c (@sequence){
+        			foreach my $d (@sequence){
+        				my $result = $call_func{$func}->($a, $b, $c, $d);
+        				printf FILE ("%10.6f %10.6f %10.6f %10.6f %10.6f\n", $a, $b, $c, $d, $result);
+        			}
+        		}
+        	}
+        }
+        close(FILE) or warn $!;
 }
+
 
 
 
