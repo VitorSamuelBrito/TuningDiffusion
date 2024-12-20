@@ -1,0 +1,15 @@
+# trajectory 1
+cat LD.CD.in1 | ./LD.1D.CD.table.pl
+
+#trajectory 2
+cat LD.CD.in2 | ./LD.1D.CD.table.pl
+
+#trajectory 3
+cat LD.slope1.CD.in3 | ./LD.1D.slope1.CD.table.pl
+
+#trajectory 4
+cat LD.slope1.sinD.in5 | ./LD.1D.slope1.sinD.table.pl
+
+#trajectory 5
+cat LD.slope1.expD.in6 | ./LD.1D.slope1.expD.table.pl
+
