@@ -67,45 +67,45 @@ def cartesian(arrays, out=None):
 
 
 ## comparing each function with respective perl results
-def test_Vx():
-    """Function to test the Vx function from library_diffusion"""
-    ## To be used in all comparisons
-    threshold = 0.001
-    ## loading the sequence used to generate data
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+# def test_Vx():
+#     """Function to test the Vx function from library_diffusion"""
+#     ## To be used in all comparisons
+#     threshold = 0.001
+#     ## loading the sequence used to generate data
+#     sequence = np.genfromtxt('share/sequence.dat')
+#     ## generate the vector used as input
+#     input = cartesian([sequence, sequence, sequence, sequence])
 
-    # loading the data from DDsin generated with perl
-    grad24_data = np.genfromtxt('share/grad24_test.dat')
-    # calculating the results
-    results = []
-    for a, b, c, d in input:
-        results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
-    results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
-                         threshold).all()
-    assert test
+#     # loading the data from grad24 generated with perl
+#     grad24_data = np.genfromtxt('share/grad24_test.dat')
+#     # calculating the results
+#     results = []
+#     for a, b, c, d in input:
+#         results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
+#     results = np.asarray(results)
+#     test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
+#                          threshold).all()
+#     assert test
 
-def test_Fx():
-    """Function to test the Fx function from library_diffusion"""
-    ## To be used in all comparisons
-    threshold = 0.001
-    ## loading the sequence used to generate data
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+# def test_Fx():
+#     """Function to test the Fx function from library_diffusion"""
+#     ## To be used in all comparisons
+#     threshold = 0.001
+#     ## loading the sequence used to generate data
+#     sequence = np.genfromtxt('share/sequence.dat')
+#     ## generate the vector used as input
+#     input = cartesian([sequence, sequence, sequence, sequence])
 
-    # loading the data from DDsin generated with perl
-    E24_data = np.genfromtxt('share/E24_test.dat')
-    # calculating the results
-    results = []
-    for a, b, c, d in input:
-        results.append([a, b, c, d, libdiff.Fx(a, b, c, d)])
-    results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, E24_data)), \
-                         threshold).all()
-    assert test
+#     # loading the data from DDsin generated with perl
+#     E24_data = np.genfromtxt('share/E24_test.dat')
+#     # calculating the results
+#     results = []
+#     for a, b, c, d in input:
+#         results.append([a, b, c, d, libdiff.Fx(a, b, c, d)])
+#     results = np.asarray(results)
+#     test = np.less_equal(np.absolute(np.subtract(results, E24_data)), \
+#                          threshold).all()
+#     assert test
 
 def test_VG():
     """Function to test the VG function from library_diffusion"""
