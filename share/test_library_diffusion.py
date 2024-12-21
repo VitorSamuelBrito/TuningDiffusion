@@ -58,23 +58,23 @@ def cartesian(arrays, out=None):
             out[j*m:(j+1)*m, 1:] = out[0:m, 1:]
     return out
 
-## To be used in all comparisons
-#threshold = 0.001
-## loading the sequence used to generate data
-#sequence = np.genfromtxt('share/sequence.dat')
-## generate the vector used as input
-#input = cartesian([sequence, sequence, sequence, sequence])
+# To be used in all comparisons
+threshold = 0.001
+# loading the sequence used to generate data
+sequence = np.genfromtxt('share/sequence.dat')
+# generate the vector used as input
+input = cartesian([sequence, sequence, sequence, sequence])
 
 
 ## comparing each function with respective perl results
 def test_Vx():
-    """Function to test the Vx function from library_diffusion"""
-    ## To be used in all comparisons
-    threshold = 0.001
-    ## loading the sequence used to generate data
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    # """Function to test the Vx function from library_diffusion"""
+    # ## To be used in all comparisons
+    # threshold = 0.001
+    # ## loading the sequence used to generate data
+    # sequence = np.genfromtxt('share/sequence.dat')
+    # ## generate the vector used as input
+    # input = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from grad24 generated with perl
     grad24_data = np.genfromtxt('share/grad24_test.dat')
