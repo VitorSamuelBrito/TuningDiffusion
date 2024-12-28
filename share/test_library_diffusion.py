@@ -83,10 +83,6 @@ def test_Vx():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
     results = np.asarray(results)
-    # with open("Vx_test.dat", "w") as file:
-    #         for a, b, c, d, r in results:
-    #             file.write(f"{a:.6f} {b:.6f} {c:.6f} {d:.6f} {r:.6f}\n")
-    
     test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
                          threshold).all()
     assert test
@@ -190,6 +186,3 @@ def test_Dxsinpartial():
     test = np.less_equal(np.absolute(np.subtract(results, DDsinslope_data)), \
                          threshold).all()
     assert test
-
-teste = test_Vx
-print(teste)
