@@ -35,7 +35,7 @@ my @sequence = sort { $a <=> $b } @unsorted_sequence;
 open(INITIALFILE,">sequence.dat") or die "can\'t open new file\n";
 foreach $a (@sequence) {
 #   print "value of a: $a\n";
-	printf INITIALFILE ("%10.3f\n", $a); ## %10.6f
+	printf INITIALFILE ("%10.6f\n", $a); ## %10.6f
 }
 close(INITIALFILE) or  warn $!;
 
@@ -75,7 +75,7 @@ foreach my $func ( @funcs ) {
         		foreach my $c (@sequence){
         			foreach my $d (@sequence){
         				my $result = $call_func{$func}->($a, $b, $c, $d);
-        				printf FILE ("%10.3f %10.3f %10.3f %10.3f %10.3f\n", $a, $b, $c, $d, $result); ## %10.6f
+        				printf FILE ("%10.6f %10.6f %10.6f %10.6f %10.6f\n", $a, $b, $c, $d, $result); ## %10.6f
         			}
         		}
         	}
