@@ -86,7 +86,7 @@ def test_Vx():
     # test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
     #                      threshold).all()
     sub = np.absolute(np.subtract(results, grad24_data))                   
-    test = np.less_equal(sub, threshold)
+    test = np.less_equal(sub, threshold).all()
     
     assert test
 
@@ -109,7 +109,7 @@ def test_Fx():
     # test = np.less_equal(np.absolute(np.subtract(results, E24_data)), \
     #                      threshold).all()
     sub = np.absolute(np.subtract(results, E24_data))                   
-    test = np.less_equal(sub, threshold)
+    test = np.less_equal(sub, threshold).all()
 
     assert test
 
@@ -132,7 +132,7 @@ def test_VG():
     # test = np.less_equal(np.absolute(np.subtract(results, gradG_data)), \
     #                      threshold).all()
     sub = np.absolute(np.subtract(results, gradG_data))                   
-    test = np.less_equal(sub, threshold)
+    test = np.less_equal(sub, threshold).all()
     assert test
 
 def test_FG():
@@ -154,7 +154,7 @@ def test_FG():
     # test = np.less_equal(np.absolute(np.subtract(results, EG_data)), \
     #                      threshold).all()
     sub = np.absolute(np.subtract(results, EG_data))                   
-    test = np.less_equal(sub, threshold)
+    test = np.less_equal(sub, threshold).all()
     assert test
 
 def test_Dxsin():
@@ -176,7 +176,7 @@ def test_Dxsin():
     # test = np.less_equal(np.absolute(np.subtract(results, DDsin_data)), \
     #                      threshold).all()
     sub = np.absolute(np.subtract(results, DDsin_data))                   
-    test = np.less_equal(sub, threshold)
+    test = np.less_equal(sub, threshold).all()
     assert test
 
 def test_Dxsinpartial():
@@ -198,5 +198,5 @@ def test_Dxsinpartial():
     # test = np.less_equal(np.absolute(np.subtract(results, DDsinslope_data)), \
     #                      threshold).all()
     sub = np.absolute(np.subtract(results, DDsinslope_data))                   
-    test = np.less_equal(sub, threshold)
+    test = np.less_equal(sub, threshold).all()
     assert test
