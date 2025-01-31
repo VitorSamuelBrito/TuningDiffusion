@@ -83,7 +83,10 @@ def test_Vx():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
     results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
+    np.savetxt("results_vx", results, fmt="%10.6f")
+    results_data = np.genfromtxt('results_vx') ## add test
+    
+    test = np.less_equal(np.absolute(np.subtract(results_data, grad24_data)), \
                          threshold).all()
     
     assert test
@@ -104,7 +107,10 @@ def test_Fx():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Fx(a, b, c, d)])
     results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, E24_data)), \
+    np.savetxt("results_Fx", results, fmt="%10.6f")
+    results_data = np.genfromtxt('results_Fx') ## add test
+    
+    test = np.less_equal(np.absolute(np.subtract(results_data, E24_data)), \
                          threshold).all()
     # sub = np.absolute(np.subtract(results, E24_data))                   
     # test = np.less_equal(sub, threshold).all()
@@ -127,7 +133,10 @@ def test_VG():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.VG(a, b, c, d)])
     results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, gradG_data)), \
+    np.savetxt("results_VG", results, fmt="%10.6f")
+    results_data = np.genfromtxt('results_VG') ## add test
+    
+    test = np.less_equal(np.absolute(np.subtract(results_data, gradG_data)), \
                          threshold).all()
 
     assert test
@@ -148,7 +157,10 @@ def test_FG():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.FG(a, b, c, d)])
     results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, EG_data)), \
+    np.savetxt("results_FG", results, fmt="%10.6f")
+    results_data = np.genfromtxt('results_FG') ## add test
+    
+    test = np.less_equal(np.absolute(np.subtract(results_data, EG_data)), \
                          threshold).all()
 
     assert test
@@ -169,7 +181,10 @@ def test_Dxsin():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Dxsin(a, b, c, d)])
     results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, DDsin_data)), \
+    np.savetxt("results_Dxsin", results, fmt="%10.6f")
+    results_data = np.genfromtxt('results_Dxsin') ## add test
+    
+    test = np.less_equal(np.absolute(np.subtract(results_data, DDsin_data)), \
                          threshold).all()
 
     assert test
@@ -190,7 +205,10 @@ def test_Dxsinpartial():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Dxsinpartial(a, b, c, d)])
     results = np.asarray(results)
-    test = np.less_equal(np.absolute(np.subtract(results, DDsinslope_data)), \
+    np.savetxt("results_Dxpartial", results, fmt="%10.6f")
+    results_data = np.genfromtxt('results_Dxpartial') ## add test
+    
+    test = np.less_equal(np.absolute(np.subtract(results_data, DDsinslope_data)), \
                          threshold).all()
 
     assert test
