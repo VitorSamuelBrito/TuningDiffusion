@@ -86,7 +86,7 @@ def test_Vx():
 #     np.savetxt("results_vx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_vx') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results_data, grad24_data)), \
+    test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
                          threshold).all()
     
     assert test
@@ -110,7 +110,7 @@ def test_Fx():
 #     np.savetxt("results_Fx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Fx') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results_data, E24_data)), \
+    test = np.less_equal(np.absolute(np.subtract(results, E24_data)), \
                          threshold).all()
 
     assert test
@@ -134,7 +134,7 @@ def test_VG():
 #     np.savetxt("results_VG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_VG') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results_data, gradG_data)), \
+    test = np.less_equal(np.absolute(np.subtract(results, gradG_data)), \
                          threshold).all()
 
     assert test
@@ -158,7 +158,7 @@ def test_FG():
 #     np.savetxt("results_FG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_FG') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results_data, EG_data)), \
+    test = np.less_equal(np.absolute(np.subtract(results, EG_data)), \
                          threshold).all()
 
     assert test
@@ -182,7 +182,7 @@ def test_Dxsin():
 #     np.savetxt("results_Dxsin", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxsin') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results_data, DDsin_data)), \
+    test = np.less_equal(np.absolute(np.subtract(results, DDsin_data)), \
                          threshold).all()
 
     assert test
@@ -206,7 +206,7 @@ def test_Dxsinpartial():
 #     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results_data, DDsinslope_data)), \
+    test = np.less_equal(np.absolute(np.subtract(results, DDsinslope_data)), \
                          threshold).all()
 
     assert test
