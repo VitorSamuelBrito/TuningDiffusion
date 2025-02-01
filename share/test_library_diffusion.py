@@ -112,8 +112,6 @@ def test_Fx():
     
     test = np.less_equal(np.absolute(np.subtract(results_data, E24_data)), \
                          threshold).all()
-    # sub = np.absolute(np.subtract(results, E24_data))                   
-    # test = np.less_equal(sub, threshold).all()
 
     assert test
 
