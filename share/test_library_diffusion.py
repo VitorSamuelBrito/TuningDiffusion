@@ -70,7 +70,7 @@ def cartesian(arrays, out=None):
 def test_Vx():
     """Function to test the Vx function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.1
+    threshold = 0.01
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -94,7 +94,7 @@ def test_Vx():
 def test_Fx():
     """Function to test the Fx function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.1 # init in 0.001
+    threshold = 0.01 # init in 0.001
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -118,7 +118,7 @@ def test_Fx():
 def test_VG():
     """Function to test the VG function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.1
+    threshold = 0.01
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -134,7 +134,7 @@ def test_VG():
 #     np.savetxt("results_VG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_VG') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, gradG_data)), \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, gradG_data)), results), \
                          threshold).all()
 
     assert test
@@ -142,7 +142,7 @@ def test_VG():
 def test_FG():
     """Function to test the FG function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.1
+    threshold = 0.01
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -158,7 +158,7 @@ def test_FG():
 #     np.savetxt("results_FG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_FG') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, EG_data)), \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), results) \
                          threshold).all()
 
     assert test
@@ -166,7 +166,7 @@ def test_FG():
 def test_Dxsin():
     """Function to test the Dxsin function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.1
+    threshold = 0.01
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -190,7 +190,7 @@ def test_Dxsin():
 def test_Dxsinpartial():
     """Function to test the Dxsinpartial function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.1
+    threshold = 0.01
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -206,7 +206,7 @@ def test_Dxsinpartial():
 #     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, DDsinslope_data)), \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), results)\
                          threshold).all()
 
     assert test
