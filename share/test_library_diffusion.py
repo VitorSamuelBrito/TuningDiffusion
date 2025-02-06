@@ -59,7 +59,7 @@ def cartesian(arrays, out=None):
     return out
 
 # # To be used in all comparisons
-# threshold = 0.01
+# threshold = 0.01 (percentage)
 # # loading the sequence used to generate data
 # sequence = np.genfromtxt('share/sequence.dat')
 # # generate the vector used as input
@@ -86,8 +86,8 @@ def test_Vx():
 #     np.savetxt("results_vx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_vx') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, grad24_data)), \
-                         threshold).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
+        grad24_data)), results), threshold).all()
     
     assert test
 
@@ -110,8 +110,8 @@ def test_Fx():
 #     np.savetxt("results_Fx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Fx') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, E24_data)), \
-                         threshold).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
+        E24_data)), results), threshold).all()
 
     assert test
 
@@ -182,8 +182,8 @@ def test_Dxsin():
 #     np.savetxt("results_Dxsin", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxsin') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, DDsin_data)), \
-                         threshold).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
+        DDsin_data)), results), threshold).all()
 
     assert test
 
