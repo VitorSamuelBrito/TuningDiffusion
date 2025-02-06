@@ -86,8 +86,9 @@ def test_Vx():
 #     np.savetxt("results_vx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_vx') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
-        grad24_data)), results), threshold, out=np.zeros_like(results), where=results!=0).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, grad24_data)), \
+                                   results, out=np.zeros_like(results), \
+                                    where=results!=0), threshold).all()
     
     assert test
 
@@ -110,8 +111,9 @@ def test_Fx():
 #     np.savetxt("results_Fx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Fx') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
-        E24_data)), results), threshold, out=np.zeros_like(results), where=results!=0).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, E24_data)), \
+                                   results, out=np.zeros_like(results), \
+                                    where=results!=0), threshold).all()
 
     assert test
 
@@ -134,8 +136,9 @@ def test_VG():
 #     np.savetxt("results_VG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_VG') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, gradG_data)), results), \
-                         threshold, out=np.zeros_like(results), where=results!=0).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, gradG_data)), \
+                                   results, out=np.zeros_like(results), \
+                                    where=results!=0), threshold).all()
 
     assert test
 
@@ -158,8 +161,9 @@ def test_FG():
 #     np.savetxt("results_FG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_FG') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), results) \
-                         threshold, out=np.zeros_like(results), where=results!=0).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), \
+                                   results, out=np.zeros_like(results), \
+                                    where=results!=0), threshold).all()
 
     assert test
 
@@ -182,8 +186,9 @@ def test_Dxsin():
 #     np.savetxt("results_Dxsin", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxsin') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
-        DDsin_data)), results), threshold, out=np.zeros_like(results), where=results!=0).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsin_data)), \
+                                   results, out=np.zeros_like(results), \
+                                    where=results!=0), threshold).all()
 
     assert test
 
@@ -206,7 +211,8 @@ def test_Dxsinpartial():
 #     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), results)\
-                         threshold, out=np.zeros_like(results), where=results!=0).all()
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), \
+                                   results, out=np.zeros_like(results), \
+                                    where=results!=0), threshold).all()
 
     assert test
