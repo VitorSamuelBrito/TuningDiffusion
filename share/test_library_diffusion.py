@@ -87,7 +87,7 @@ def test_Vx():
 #     results_data = np.genfromtxt('results_vx') ## add test
     
     test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
-        grad24_data)), results), threshold).all()
+        grad24_data)), results), threshold, out=np.zeros_like(results), where=results!=0).all()
     
     assert test
 
@@ -111,7 +111,7 @@ def test_Fx():
 #     results_data = np.genfromtxt('results_Fx') ## add test
     
     test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
-        E24_data)), results), threshold).all()
+        E24_data)), results), threshold, out=np.zeros_like(results), where=results!=0).all()
 
     assert test
 
@@ -135,7 +135,7 @@ def test_VG():
 #     results_data = np.genfromtxt('results_VG') ## add test
     
     test = np.less_equal(np.divide(np.absolute(np.subtract(results, gradG_data)), results), \
-                         threshold).all()
+                         threshold, out=np.zeros_like(results), where=results!=0).all()
 
     assert test
 
@@ -159,7 +159,7 @@ def test_FG():
 #     results_data = np.genfromtxt('results_FG') ## add test
     
     test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), results) \
-                         threshold).all()
+                         threshold, out=np.zeros_like(results), where=results!=0).all()
 
     assert test
 
@@ -183,7 +183,7 @@ def test_Dxsin():
 #     results_data = np.genfromtxt('results_Dxsin') ## add test
     
     test = np.less_equal(np.divide(np.absolute(np.subtract(results, \
-        DDsin_data)), results), threshold).all()
+        DDsin_data)), results), threshold, out=np.zeros_like(results), where=results!=0).all()
 
     assert test
 
@@ -207,6 +207,6 @@ def test_Dxsinpartial():
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
     
     test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), results)\
-                         threshold).all()
+                         threshold, out=np.zeros_like(results), where=results!=0).all()
 
     assert test
