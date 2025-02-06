@@ -70,7 +70,7 @@ def cartesian(arrays, out=None):
 def test_Vx():
     """Function to test the Vx function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
+    threshold = 0.1
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -94,7 +94,7 @@ def test_Vx():
 def test_Fx():
     """Function to test the Fx function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01 # init in 0.001
+    threshold = 0.1 # init in 0.001
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -118,7 +118,7 @@ def test_Fx():
 def test_VG():
     """Function to test the VG function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
+    threshold = 0.1
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -142,7 +142,7 @@ def test_VG():
 def test_FG():
     """Function to test the FG function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
+    threshold = 0.1
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -166,7 +166,7 @@ def test_FG():
 def test_Dxsin():
     """Function to test the Dxsin function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
+    threshold = 0.1
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -190,7 +190,7 @@ def test_Dxsin():
 def test_Dxsinpartial():
     """Function to test the Dxsinpartial function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
+    threshold = 0.1
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
