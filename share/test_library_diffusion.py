@@ -59,7 +59,7 @@ def cartesian(arrays, out=None):
     return out
 
 # # To be used in all comparisons
-# threshold = 0.1
+# threshold = 0.01
 # # loading the sequence used to generate data
 # sequence = np.genfromtxt('share/sequence.dat')
 # # generate the vector used as input
@@ -158,7 +158,7 @@ def test_FG():
 #     np.savetxt("results_FG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_FG') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), results) \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), results), \
                          threshold).all()
 
     assert test
@@ -206,7 +206,7 @@ def test_Dxsinpartial():
 #     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
     
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), results)\
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), results), \
                          threshold).all()
 
     assert test
