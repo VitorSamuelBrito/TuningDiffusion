@@ -134,7 +134,7 @@ def test_VG():
 #     np.savetxt("results_VG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_VG') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, gradG_data)), \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, gradG_data)), results), \
                          threshold).all()
 
     assert test
@@ -158,7 +158,7 @@ def test_FG():
 #     np.savetxt("results_FG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_FG') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, EG_data)), \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), results) \
                          threshold).all()
 
     assert test
@@ -206,7 +206,7 @@ def test_Dxsinpartial():
 #     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
     
-    test = np.less_equal(np.absolute(np.subtract(results, DDsinslope_data)), \
+    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), results)\
                          threshold).all()
 
     assert test
