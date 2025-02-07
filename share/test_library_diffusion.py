@@ -71,22 +71,35 @@ def comparison(value, reference):
     out : boolean
         comparison between value and reference arrays.
     """
+    value = np.asarray(value)
+    reference = np.asarray(reference)
     # # To be used in all comparisons
-    threshold = 0.01 # (percentage)
+    threshold = 0.001
+    threshold_per = 0.01 # (percentage)
     # absolute difference between value and reference
     difference = np.absolute(np.subtract(np.absolute(value), \
                                          np.absolute(reference)))
-    # percent comparison
-    percentage = np.divide(difference, np.absolute(reference), \
-                           out=np.zeros_like(np.absolute(reference)), \
-                           where=np.absolute(reference)!=0)
-    # excluding percentage comparisons when value is zero
-    percentage = percentage[value!=0]
-    test_percentage = np.less_equal(percentage, threshold).all()
-    # comparisons when one of the values is zero should direct
-    direct_difference_value = difference[value==0]
-    test_direct = np.less_equal(direct_difference_value, threshold).all() 
-    test = test_percentage and test_direct
+    # direct comparison based on the difference
+    test_direct = np.less_equal(difference, threshold).all()
+    if test_direct:
+        print("Passed direct comparison")
+        test = test_direct
+    else:
+        # percent comparison
+        percentage = np.divide(difference, np.absolute(reference), \
+                               out=np.zeros_like(np.absolute(reference)), \
+                                where=np.absolute(reference)!=0)
+        # testing if direct difference when value or reference is zero is 
+        # below threshold
+        if np.less_equal(difference[value==0], threshold).all() and \
+            np.less_equal(difference[reference==0], threshold).all():
+            # excluding percentage comparisons when value is zero
+            percentage = percentage[value!=0]
+            test_percentage = np.less_equal(percentage, threshold_per).all()
+            print("Some values passed only by percentage comparison")
+            test = test_percentage
+        else:
+            test = False
     return test
 
 
