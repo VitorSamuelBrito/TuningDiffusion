@@ -98,9 +98,13 @@ def comparison(value, reference):
             # excluding percentage comparisons when value is zero
             percentage = percentage[value!=0]
             test_percentage = np.less_equal(percentage, threshold_per).all()
-            print("Some values passed only by percentage comparison")
+                if test_percentage:
+                    print("Some values have passed only by percentage comparison")
+                else:
+                    print("Failed in percentage comparison")
             test = test_percentage
         else:
+            print("Difference on zero values are above threshold")
             test = False
     return test
 
