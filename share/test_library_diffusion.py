@@ -61,25 +61,27 @@ def cartesian(arrays, out=None):
 
 def comparison(value, reference):
     """
-    Function to compare two values given a percentage
+    Function to compare two vectors given a threshold and a percentage limit
+    
     Parameters
     ----------
-    value, reference : 1-D array.
+    value, reference : 1-D arrays.
     
     Returns
     -------
     out : boolean
         comparison between value and reference arrays.
     """
+    # making sure both are numpy arrays
     value = np.asarray(value)
     reference = np.asarray(reference)
-    # # To be used in all comparisons
-    threshold = 0.001
+    # # To be used in the comparisons
+    threshold = 0.0001 # (direct)
     threshold_per = 0.01 # (percentage)
     # absolute difference between value and reference
     difference = np.absolute(np.subtract(np.absolute(value), \
                                          np.absolute(reference)))
-    # direct comparison based on the difference
+    # direct comparison between the difference and threshold
     test_direct = np.less_equal(difference, threshold).all()
     if test_direct:
         print("Passed direct comparison")
@@ -101,8 +103,6 @@ def comparison(value, reference):
         else:
             test = False
     return test
-
-
 
 
 ## comparing each function with respective perl results
