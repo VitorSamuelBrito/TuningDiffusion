@@ -58,20 +58,44 @@ def cartesian(arrays, out=None):
             out[j*m:(j+1)*m, 1:] = out[0:m, 1:]
     return out
 
-# # To be used in all comparisons
-# threshold = 0.01 (percentage)
-# # loading the sequence used to generate data
-# sequence = np.genfromtxt('share/sequence.dat')
-# # generate the vector used as input
-# input = cartesian([sequence, sequence, sequence, sequence])
+
+def comparison(value, reference):
+    """
+    Function to compare two values given a percentage
+    Parameters
+    ----------
+    value, reference : 1-D array.
+    
+    Returns
+    -------
+    out : boolean
+        comparison between value and reference arrays.
+    """
+    # # To be used in all comparisons
+    threshold = 0.01 # (percentage)
+    # absolute difference between value and reference
+    difference = np.absolute(np.subtract(np.absolute(value), \
+                                         np.absolute(reference)))
+    # percent comparison
+    percentage = np.divide(difference, np.absolute(reference), \
+                           out=np.zeros_like(np.absolute(reference)), \
+                           where=np.absolute(reference)!=0)
+    # excluding percentage comparisons when value is zero
+    percentage = percentage[value!=0]
+    test_percentage = np.less_equal(percentage, threshold).all()
+    # comparisons when one of the values is zero should direct
+    direct_difference_value = difference[value==0]
+    test_direct = np.less_equal(direct_difference_value, threshold).all() 
+    test = test_percentage and test_direct
+    return test
+
+
 
 
 ## comparing each function with respective perl results
 def test_Vx():
     """Function to test the Vx function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
-    ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
     input = cartesian([sequence, sequence, sequence, sequence])
@@ -85,18 +109,12 @@ def test_Vx():
     results = np.asarray(results)
 #     np.savetxt("results_vx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_vx') ## add test
-    
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, grad24_data)), \
-                                   results, out=np.zeros_like(results), \
-                                    where=results!=0), threshold).all()
-    
+    test = comparison(results, grad24_data)    
     assert test
 
 def test_Fx():
     """Function to test the Fx function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01 # init in 0.001
-    ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
     input = cartesian([sequence, sequence, sequence, sequence])
@@ -110,18 +128,12 @@ def test_Fx():
     results = np.asarray(results)
 #     np.savetxt("results_Fx", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Fx') ## add test
-    
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, E24_data)), \
-                                   results, out=np.zeros_like(results), \
-                                    where=results!=0), threshold).all()
-
+    test = comparison(results, E24_data)
     assert test
 
 def test_VG():
     """Function to test the VG function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
-    ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
     input = cartesian([sequence, sequence, sequence, sequence])
@@ -135,18 +147,12 @@ def test_VG():
     results = np.asarray(results)
 #     np.savetxt("results_VG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_VG') ## add test
-    
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, gradG_data)), \
-                                   results, out=np.zeros_like(results), \
-                                    where=results!=0), threshold).all()
-
+    test = comparison(results, gradG_data)
     assert test
 
 def test_FG():
     """Function to test the FG function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
-    ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
     input = cartesian([sequence, sequence, sequence, sequence])
@@ -160,18 +166,12 @@ def test_FG():
     results = np.asarray(results)
 #     np.savetxt("results_FG", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_FG') ## add test
-    
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, EG_data)), \
-                                   results, out=np.zeros_like(results), \
-                                    where=results!=0), threshold).all()
-
+    test = comparison(results, EG_data)
     assert test
 
 def test_Dxsin():
     """Function to test the Dxsin function from library_diffusion"""
     ## To be used in all comparisons
-    threshold = 0.01
-    ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
     input = cartesian([sequence, sequence, sequence, sequence])
@@ -185,17 +185,11 @@ def test_Dxsin():
     results = np.asarray(results)
 #     np.savetxt("results_Dxsin", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxsin') ## add test
-    
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsin_data)), \
-                                   results, out=np.zeros_like(results), \
-                                    where=results!=0), threshold).all()
-
+    test = comparison(results, DDsin_data)
     assert test
 
 def test_Dxsinpartial():
     """Function to test the Dxsinpartial function from library_diffusion"""
-    ## To be used in all comparisons
-    threshold = 0.01
     ## loading the sequence used to generate data
     sequence = np.genfromtxt('share/sequence.dat')
     ## generate the vector used as input
@@ -210,9 +204,5 @@ def test_Dxsinpartial():
     results = np.asarray(results)
 #     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
 #     results_data = np.genfromtxt('results_Dxpartial') ## add test
-    
-    test = np.less_equal(np.divide(np.absolute(np.subtract(results, DDsinslope_data)), \
-                                   results, out=np.zeros_like(results), \
-                                    where=results!=0), threshold).all()
-
+    test = comparison(results, DDsinslope_data)
     assert test
