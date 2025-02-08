@@ -79,8 +79,7 @@ def comparison(value, reference):
     threshold = 0.0001 # (direct)
     threshold_per = 0.01 # (percentage)
     # absolute difference between value and reference
-    difference = np.absolute(np.subtract(np.absolute(value), \
-                                         np.absolute(reference)))
+    difference = np.absolute(np.subtract(value), reference)
     # direct comparison between the difference and threshold
     test_direct = np.less_equal(difference, threshold).all()
     if test_direct:
