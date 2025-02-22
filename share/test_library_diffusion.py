@@ -10,6 +10,7 @@ def import_file(filepath):
     data_type = np.longdouble
     return np.genfromtxt(filepath, dtype=data_type)
 
+
 def cartesian(arrays, out=None):
     """
     Obs. Found on internet
@@ -81,38 +82,45 @@ def comparison(value, reference):
     value = np.asarray(value)
     reference = np.asarray(reference)
     # # To be used in the comparisons
-    threshold = 0.0001 # (direct)
-    threshold_per = 0.01 # (percentage)
+    threshold = 1e-18 # (direct)
+    threshold_per = 1e-06 # (percentage)
     # absolute difference between value and reference
     difference = np.absolute(np.subtract(value, reference))
     # direct comparison between the difference and threshold
     test_direct = np.less_equal(difference, threshold).all()
+    # which values failed direct comparison (if any)
+    idx_failed_direct = \
+        np.where(np.less_equal(difference[:, 4], threshold)==False)[0]
     if test_direct:
-        print("Passed direct comparison")
+        print("Passed direct comparison.")
         test = test_direct
     else:
+        # If none of the following tests return True, must return False
+        test = False
         # percent comparison
         percentage = np.divide(difference, np.absolute(reference), \
                                out=np.zeros_like(np.absolute(reference)), \
                                 where=np.absolute(reference)!=0)
+        idx_per = np.where(percentage[:, 4]==percentage.max())[0]
+        print("Maximum percentage is {} and is located at the line(s) {}.".format(percentage[:, 4].max(), idx_per))
         # testing if direct difference when value or reference is zero is 
         # below threshold
         if np.less_equal(difference[value==0], threshold).all() and \
             np.less_equal(difference[reference==0], threshold).all():
             # excluding percentage comparisons when value is zero
-            percentage = percentage[value!=0]
-            test_percentage = np.less_equal(percentage, threshold_per).all()
+            idx_value_is_zero = np.where(value[:,4]!=0)[0]
+            percentage = percentage[idx_value_is_zero]
+            # in this test, we have to assure comparison only in the functions' results
+            test_percentage = np.less_equal(percentage[:, 4], threshold_per).all()
             if test_percentage:
-                idx_passed = np.where(test_percentage==True)[0]
-                print("Some values have passed only by percentage comparison \
-                      at lines {}".format(idx_passed))
+                idx_passed = np.where(np.less_equal(percentage[:, 4], threshold_per)==True)[0]
+                print("Some values have passed only by percentage comparison in {} lines and {} values passed in the percentage comparison.".format(idx_failed_direct.shape[0], idx_passed.shape[0]))
             else:
-                idx_percentage = np.where(test_percentage==False)[0]
-                print("Failed in percentage comparison in the lines {} \
-                      ".format(idx_percentage))
+                idx_percentage_fail = np.where(np.greater(percentage[:, 4], threshold_per))
+                print("Failed percentage comparison which values are {}.".format(percentage[:, 4][idx_percentage_fail]))
             test = test_percentage
         else:
-            print("Difference on zero values are above threshold")
+            print("Failed because direct difference where one of the values is zero is above threshold.")
             test = False
     return test
 
@@ -136,6 +144,7 @@ def test_Vx():
 #     results_data = import_file('results_vx') ## add test
     test = comparison(results, grad24_data)    
     assert test
+
 
 def test_Fx():
     """Function to test the Fx function from library_diffusion"""
