@@ -83,7 +83,9 @@ def comparison(value, reference):
     reference = np.asarray(reference)
     # # To be used in the comparisons
     threshold = 1e-18 # (direct)
-    threshold_per = 1e-06 # (percentage)
+    threshold_per = 1e-9 # (percentage)
+    # Will ignore percentage comparison if value or reference is below 1e-100
+    threshold_zero = 1e-100 
     # absolute difference between value and reference
     difference = np.absolute(np.subtract(value, reference))
     # direct comparison between the difference and threshold
@@ -97,27 +99,43 @@ def comparison(value, reference):
     else:
         # If none of the following tests return True, must return False
         test = False
-        # percent comparison
+        # Percent comparison. 
+        # First, evaluate the percentage difference on all values. 
         percentage = np.divide(difference, np.absolute(reference), \
                                out=np.zeros_like(np.absolute(reference)), \
                                 where=np.absolute(reference)!=0)
-        idx_per = np.where(percentage[:, 4]==percentage.max())[0]
-        print("Maximum percentage is {} and is located at the line(s) {}.".format(percentage[:, 4].max(), idx_per))
-        # testing if direct difference when value or reference is zero is 
-        # below threshold
+        idx_per = np.where(percentage[:, 4]>=threshold_per)[0]
+        print("There are {} values above percentage threshold.".format(idx_per.shape[0]))
+        # Then tests if direct difference is below threshold when either
+        # correspondent value or reference is zero. Must be True to continue.
         if np.less_equal(difference[value==0], threshold).all() and \
             np.less_equal(difference[reference==0], threshold).all():
-            # excluding percentage comparisons when value is zero
-            idx_value_is_zero = np.where(value[:,4]!=0)[0]
-            percentage = percentage[idx_value_is_zero]
+            # Excluding percentage comparisons when value or reference is close
+            # to zero.
+            idx_value_is_almost_zero = \
+                np.where(np.greater_equal(np.absolute(value[:,4]), \
+                                       threshold_zero))[0]
+            idx_reference_is_almost_zero = \
+                np.where(np.greater_equal(np.absolute(reference[:,4]), \
+                                       threshold_zero))[0]
+            idx_is_almost_zero = \
+                np.unique(np.append(idx_value_is_almost_zero, \
+                                            idx_reference_is_almost_zero))
+            percentage = percentage[idx_is_almost_zero]
+            value = value[idx_is_almost_zero]
+            reference = reference[idx_is_almost_zero]
             # in this test, we have to assure comparison only in the functions' results
-            test_percentage = np.less_equal(percentage[:, 4], threshold_per).all()
+            test_percentage = np.less_equal(percentage[:, 4], \
+                                            threshold_per).all()
             if test_percentage:
-                idx_passed = np.where(np.less_equal(percentage[:, 4], threshold_per)==True)[0]
+                idx_passed = np.where(np.less_equal(percentage[:, 4], \
+                                                    threshold_per)==True)[0]
                 print("Some values have passed only by percentage comparison in {} lines and {} values passed in the percentage comparison.".format(idx_failed_direct.shape[0], idx_passed.shape[0]))
             else:
-                idx_percentage_fail = np.where(np.greater(percentage[:, 4], threshold_per))
+                idx_percentage_fail = np.where(np.greater(percentage[:, 4], \
+                                                          threshold_per))
                 print("Failed percentage comparison which values are {}.".format(percentage[:, 4][idx_percentage_fail]))
+                print("Correspondent reference in the same places are {}".format(reference[:, 4][idx_percentage_fail]))
             test = test_percentage
         else:
             print("Failed because direct difference where one of the values is zero is above threshold.")
@@ -140,7 +158,7 @@ def test_Vx():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
     results = np.asarray(results)
-    np.savetxt("results_vx", results, fmt="%10.6f")
+    np.savetxt("results_vx", results, fmt="%.18e ")
 #     results_data = import_file('results_vx') ## add test
     test = comparison(results, grad24_data)    
     assert test
@@ -160,7 +178,7 @@ def test_Fx():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Fx(a, b, c, d)])
     results = np.asarray(results)
-    np.savetxt("results_Fx", results, fmt="%10.6f")
+    np.savetxt("results_Fx", results, fmt="%.18e ")
 #     results_data = import_file('results_Fx') ## add test
     test = comparison(results, E24_data)
     assert test
@@ -179,7 +197,7 @@ def test_VG():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.VG(a, b, c, d)])
     results = np.asarray(results)
-    np.savetxt("results_VG", results, fmt="%10.6f")
+    np.savetxt("results_VG", results, fmt="%.18e ")
 #     results_data = import_file('results_VG') ## add test
     test = comparison(results, gradG_data)
     assert test
@@ -198,7 +216,7 @@ def test_FG():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.FG(a, b, c, d)])
     results = np.asarray(results)
-    np.savetxt("results_FG", results, fmt="%10.6f")
+    np.savetxt("results_FG", results, fmt="%.18e ")
 #     results_data = import_file('results_FG') ## add test
     test = comparison(results, EG_data)
     assert test
@@ -217,7 +235,7 @@ def test_Dxsin():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Dxsin(a, b, c, d)])
     results = np.asarray(results)
-    np.savetxt("results_Dxsin", results, fmt="%10.6f")
+    np.savetxt("results_Dxsin", results, fmt="%.18e ")
 #     results_data = import_file('results_Dxsin') ## add test
     test = comparison(results, DDsin_data)
     assert test
@@ -236,7 +254,7 @@ def test_Dxsinpartial():
     for a, b, c, d in input:
         results.append([a, b, c, d, libdiff.Dxsinpartial(a, b, c, d)])
     results = np.asarray(results)
-    np.savetxt("results_Dxpartial", results, fmt="%10.6f")
+    np.savetxt("results_Dxpartial", results, fmt="%.18e ")
 #     results_data = import_file('results_Dxpartial') ## add test
     test = comparison(results, DDsinslope_data)
     assert test
