@@ -97,10 +97,12 @@ def comparison(value, reference):
         print("Passed direct comparison.")
         test = test_direct
     else:
+        # Show where direct comparison is failing (if that happens)
+        print("{} failed direct comparison at lines {}.".format(idx_failed_direct.shape[0], idx_failed_direct))
         # If none of the following tests return True, must return False
         test = False
         # Percent comparison. 
-        # First, evaluate the percentage difference on all values. 
+        # First, evaluate the percentage difference on values where reference is not zero. 
         percentage = np.divide(difference, np.absolute(reference), \
                                out=np.zeros_like(np.absolute(reference)), \
                                 where=np.absolute(reference)!=0)
@@ -112,19 +114,19 @@ def comparison(value, reference):
             np.less_equal(difference[reference==0], threshold).all():
             # Excluding percentage comparisons when value or reference is close
             # to zero.
-            idx_value_is_almost_zero = \
+            idx_value_is_far_from_zero = \
                 np.where(np.greater_equal(np.absolute(value[:,4]), \
                                        threshold_zero))[0]
-            idx_reference_is_almost_zero = \
+            idx_reference_is_far_from_zero = \
                 np.where(np.greater_equal(np.absolute(reference[:,4]), \
                                        threshold_zero))[0]
-            idx_is_almost_zero = \
-                np.unique(np.append(idx_value_is_almost_zero, \
-                                            idx_reference_is_almost_zero))
-            percentage = percentage[idx_is_almost_zero]
-            value = value[idx_is_almost_zero]
-            reference = reference[idx_is_almost_zero]
-            # in this test, we have to assure comparison only in the functions' results
+            idx_is_far_from_zero = \
+                np.unique(np.append(idx_value_is_far_from_zero, \
+                                            idx_reference_is_far_from_zero))
+            percentage = percentage[idx_is_far_from_zero]
+            value = value[idx_is_far_from_zero]
+            reference = reference[idx_is_far_from_zero]
+            # In this test, we have to assure comparison only in the functions' results
             test_percentage = np.less_equal(percentage[:, 4], \
                                             threshold_per).all()
             if test_percentage:
