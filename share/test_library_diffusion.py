@@ -14,7 +14,7 @@ def import_file(filepath):
 def cartesian(arrays, out=None):
     """
     Obs. Found on internet
-    Generate a Cartesian product of input arrays.
+    Generate a Cartesian product of input_data arrays.
 
     Parameters
     ----------
@@ -27,7 +27,7 @@ def cartesian(arrays, out=None):
     -------
     out : ndarray
         2-D array of shape (M, len(arrays)) containing Cartesian products
-        formed of input arrays.
+        formed of input_data arrays.
 
     Examples
     --------
@@ -85,7 +85,7 @@ def comparison(value, reference):
     threshold = 1e-10 # (direct)
     threshold_per = 1e-6 # (percentage)
     # Will ignore percentage comparison if value or reference is below 1e-100
-    threshold_zero = 1e-300 
+    threshold_zero = 1e-300
     # absolute difference between value and reference
     difference = np.absolute(np.subtract(value, reference))
     # direct comparison between the difference and threshold
@@ -106,8 +106,8 @@ def comparison(value, reference):
         # Show where direct comparison is failing (if that happens)
         #print("{} failed direct comparison at lines {}.".format(idx_failed_direct.shape[0], idx_failed_direct))
         print("{} failed direct comparison.".format(idx_failed_direct.shape[0]))
-        # Percent comparison. 
-        # First, evaluate the percentage difference on values where reference is not zero. 
+        # Percent comparison.
+        # First, evaluate the percentage difference on values where reference is not zero.
         percentage = np.divide(difference, np.absolute(reference), \
                                out=np.zeros_like(np.absolute(reference)), \
                                 where=np.absolute(reference)!=0)
@@ -156,19 +156,19 @@ def test_Vx():
     """Function to test the Vx function from library_diffusion"""
     ## To be used in all comparisons
     sequence = import_file('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from grad24 generated with perl
     grad24_data = import_file('share/grad24_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
     results = np.asarray(results)
     np.savetxt("results_vx", results, fmt="%.18e ")
 #     results_data = import_file('results_vx') ## add test
-    test = comparison(results, grad24_data)    
+    test = comparison(results, grad24_data)
     assert test
 
 
@@ -176,14 +176,14 @@ def test_Fx():
     """Function to test the Fx function from library_diffusion"""
     ## To be used in all comparisons
     sequence = import_file('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from E24 generated with perl
     E24_data = import_file('share/E24_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Fx(a, b, c, d)])
     results = np.asarray(results)
     np.savetxt("results_Fx", results, fmt="%.18e ")
@@ -195,14 +195,14 @@ def test_VG():
     """Function to test the VG function from library_diffusion"""
     ## To be used in all comparisons
     sequence = import_file('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from gradG generated with perl
     gradG_data = import_file('share/gradG_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.VG(a, b, c, d)])
     results = np.asarray(results)
     np.savetxt("results_VG", results, fmt="%.18e ")
@@ -214,14 +214,14 @@ def test_FG():
     """Function to test the FG function from library_diffusion"""
     ## To be used in all comparisons
     sequence = import_file('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from EG generated with perl
     EG_data = import_file('share/EG_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.FG(a, b, c, d)])
     results = np.asarray(results)
     np.savetxt("results_FG", results, fmt="%.18e ")
@@ -233,14 +233,14 @@ def test_Dxsin():
     """Function to test the Dxsin function from library_diffusion"""
     ## To be used in all comparisons
     sequence = import_file('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from DDsin generated with perl
     DDsin_data = import_file('share/DDsin_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Dxsin(a, b, c, d)])
     results = np.asarray(results)
     np.savetxt("results_Dxsin", results, fmt="%.18e ")
@@ -252,14 +252,14 @@ def test_Dxsinpartial():
     """Function to test the Dxsinpartial function from library_diffusion"""
     ## loading the sequence used to generate data
     sequence = import_file('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from DDsinslope generated with perl
     DDsinslope_data = import_file('share/DDsinslope_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Dxsinpartial(a, b, c, d)])
     results = np.asarray(results)
     np.savetxt("results_Dxpartial", results, fmt="%.18e ")
