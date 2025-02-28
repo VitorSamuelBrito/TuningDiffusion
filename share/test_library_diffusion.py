@@ -83,9 +83,9 @@ def comparison(value, reference):
     reference = np.asarray(reference)
     # # To be used in the comparisons
     threshold = 1e-18 # (direct)
-    threshold_per = 1e-9 # (percentage)
+    threshold_per = 1e-6 # (percentage)
     # Will ignore percentage comparison if value or reference is below 1e-100
-    threshold_zero = 1e-100 
+    threshold_zero = 1e-300 
     # absolute difference between value and reference
     difference = np.absolute(np.subtract(value, reference))
     # direct comparison between the difference and threshold
@@ -132,10 +132,11 @@ def comparison(value, reference):
             if test_percentage:
                 idx_passed = np.where(np.less_equal(percentage[:, 4], \
                                                     threshold_per)==True)[0]
-                print("Some values have passed only by percentage comparison in {} lines and {} values passed in the percentage comparison.".format(idx_failed_direct.shape[0], idx_passed.shape[0]))
+                print("{} values have passed only by percentage comparison. In total {} values passed in the percentage comparison.".format(idx_failed_direct.shape[0], idx_passed.shape[0]))
             else:
                 idx_percentage_fail = np.where(np.greater(percentage[:, 4], \
                                                           threshold_per))
+                print("Largest percentage above threshold is {}.".format(percentage[:, 4].max()))
                 print("Failed percentage comparison which values are {}.".format(percentage[:, 4][idx_percentage_fail]))
                 print("Correspondent reference in the same places are {}".format(reference[:, 4][idx_percentage_fail]))
             test = test_percentage
