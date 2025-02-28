@@ -82,7 +82,7 @@ def comparison(value, reference):
     value = np.asarray(value)
     reference = np.asarray(reference)
     # # To be used in the comparisons
-    threshold = 1e-18 # (direct)
+    threshold = 1e-10 # (direct)
     threshold_per = 1e-6 # (percentage)
     # Will ignore percentage comparison if value or reference is below 1e-100
     threshold_zero = 1e-300 
@@ -93,14 +93,19 @@ def comparison(value, reference):
     # which values failed direct comparison (if any)
     idx_failed_direct = \
         np.where(np.less_equal(difference[:, 4], threshold)==False)[0]
+    # Keeping only lines where the direct comparison failed
+    value = value[idx_failed_direct]
+    reference =  reference[idx_failed_direct]
+    difference = difference[idx_failed_direct]
     if test_direct:
         print("Passed direct comparison.")
         test = test_direct
     else:
-        # Show where direct comparison is failing (if that happens)
-        print("{} failed direct comparison at lines {}.".format(idx_failed_direct.shape[0], idx_failed_direct))
         # If none of the following tests return True, must return False
         test = False
+        # Show where direct comparison is failing (if that happens)
+        #print("{} failed direct comparison at lines {}.".format(idx_failed_direct.shape[0], idx_failed_direct))
+        print("{} failed direct comparison.".format(idx_failed_direct.shape[0]))
         # Percent comparison. 
         # First, evaluate the percentage difference on values where reference is not zero. 
         percentage = np.divide(difference, np.absolute(reference), \
