@@ -65,6 +65,13 @@ def cartesian(arrays, out=None):
     return out
 
 
+def compact_comparison(difference_array, input_array, threshold_zero, threshold):
+    """
+    Function to compare the difference_array values to threshold only where input_array values are above threshold_zero"""
+    return np.less_equal(difference_array[np.less_equal(\
+        np.absolute(input_array), threshold_zero)], threshold).all()
+
+
 def comparison(value, reference):
     """
     Function to compare two vectors given a threshold and a percentage limit
@@ -115,8 +122,9 @@ def comparison(value, reference):
         print("There are {} values above percentage threshold.".format(idx_per.shape[0]))
         # Then tests if direct difference is below threshold when either
         # correspondent value or reference is zero. Must be True to continue.
-        if np.less_equal(difference[value==0], threshold).all() and \
-            np.less_equal(difference[reference==0], threshold).all():
+        if compact_comparison(difference, value, threshold_zero, threshold) \
+            and compact_comparison(difference, reference, \
+                threshold_zero, threshold):
             # Excluding percentage comparisons when value or reference is close
             # to zero.
             idx_value_is_far_from_zero = \
