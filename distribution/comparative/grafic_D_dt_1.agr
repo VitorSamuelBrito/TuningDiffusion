@@ -1,7 +1,7 @@
 # Grace project file
 #
 @version 50125
-@page size 269, 190
+@page size 842, 595
 @page scroll 5%
 @page inout 5%
 @link page off
@@ -114,7 +114,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Fri Apr 25 22:00:52 2025"
+@timestamp def "Fri May 23 20:14:14 2025"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -495,7 +495,7 @@
 @    yaxis  label color 1
 @    yaxis  label place normal
 @    yaxis  tick on
-@    yaxis  tick major 15
+@    yaxis  tick major 20
 @    yaxis  tick minor ticks 1
 @    yaxis  tick default 6
 @    yaxis  tick place rounded true

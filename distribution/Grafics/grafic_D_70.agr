@@ -114,7 +114,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Thu Apr 24 20:23:02 2025"
+@timestamp def "Fri May 23 19:38:22 2025"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -161,7 +161,7 @@
 @g0 fixedpoint format general general
 @g0 fixedpoint prec 6, 6
 @with g0
-@    world -500, 0, 500, 1250
+@    world -500, 1e-05, 500, 1250
 @    stack world 0, 0, 0, 0
 @    znorm 1
 @    view 0.150000, 0.500000, 1.144118, 0.850000
