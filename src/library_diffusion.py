@@ -100,3 +100,61 @@ def cond_prob(x, x0, x1, dx):
     ptpx = np.divide(trans_count, hist_zh, out=np.zeros_like(hist_zh, dtype=float), where=hist_zh > 0)
 
     return ptpx, bin_centers, dist_den
+    
+    
+def cond_probV2(x, x0, x1, dx):
+
+ "this function calculate the probability of distribution, the P(TP|Q) and calculate the histogram in determined dx"
+
+    # to guarantee x0 < x1
+    if x0 > x1:
+        x0, x1 = x1, x0
+
+    # Pré-calcular bins e histogramas
+    xmin, xmax = np.min(x), np.max(x)
+    bins = np.arange(xmin, xmax + dx, dx)
+    bin_centers = bins[:-1] + dx / 2
+    n_bins = len(bins) - 1
+
+    # Frequência total por bin
+    hist, _ = np.histogram(x, bins=bins)
+    dist_den = hist / dx  # como dt = 1
+
+    # Contador de transições
+    trans_count = np.zeros(n_bins, dtype=float)
+
+    s = 2  # init state (indefinido)
+    tpx = [] # List to salve states
+
+    for val in x:
+        tpx.append(val)
+
+        if s == 2:
+            if val <= x0:
+                s = 0
+            elif val >= x1:
+                s = 1
+
+        elif val <= x0:
+            if s == 1:
+                # If before in state 1 salve transition
+                idxs = np.digitize(tpx, bins) - 1
+                valid = (idxs >= 0) & (idxs < n_bins)
+                np.add.at(trans_count, idxs[valid], 1)
+            s = 0
+            tpx = [] # Reset list
+
+        elif val >= x1:
+            if s == 0:
+                # If before in state 0 salve transition
+                idxs = np.digitize(tpx, bins) - 1
+                valid = (idxs >= 0) & (idxs < n_bins)
+                np.add.at(trans_count, idxs[valid], 1)
+            s = 1
+            tpx = [] # Reset list
+
+    # Calcula P(TP|Q) = número de transições / ocorrência total
+    ptpx = np.divide(trans_count, hist, out=np.zeros_like(trans_count), where=hist > 0)
+
+    return ptpx, bin_centers, dist_den
+
