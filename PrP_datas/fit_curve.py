@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from scipy.signal import find_peaks
 
 from scipy.stats import skewnorm
 
@@ -20,18 +21,25 @@ def third_model(x, a, b, c, d):
 def quartic_model(x, a, b, c, d, e):
     return a*x**4+b*x**3+c*x**2+d*x+e
 
-def polynomial_model(x, a, b, c):
-    return a*x**6+b*x**4-c*x**2 ## Não funcionou
+def duffing_model(x, a, b, c, d):
+    return a*x**4+b*x**2+c*x+d ## Não funcionou
+
+def polynomial_model(x, a, b, c, d, e, f, g):
+    return a*x**6+b*x**5+c*x**4+d*x**3+e*x**2+f*x+g ## Não funcionou
 
 def exponential_model(x, a, b):
     return a*np.exp(b*x) ## Não funcionou
 
-def sum_gaussian_model(x, A, mu, sigma, B, mu2, sigma2, C):
-    return (A*np.exp(-(x-mu)**2/(2*sigma**2)) +
+def sum_gaussian_model(x, A, mu1, sigma1, B, mu2, sigma2, C):
+    return (A*np.exp(-(x-mu1)**2/(2*sigma1**2)) +
             B*np.exp(-(x-mu2)**2/(2*sigma2**2)) + C) ## Não funcionou
 
-def gaussian_model(x, a, b):
-    return a*np.exp**(b*x) ## Não
+def sub_gaussian_model(x, A, mu1, sigma1, B, mu2, sigma2, C):
+    return C+(-A*np.exp(-(x-mu1)**2/(2*sigma1**2)) -
+            B*np.exp(-(x-mu2)**2/(2*sigma2**2))) ## Não funcionou
+
+def gaussian_model(x, a, b, c):
+    return a*np.exp(-(x-b)**2/c**2) ## Não funcionou
 
 'Diffusion Coeficient: Com chutes simples funciona, mais valor de máxima verossimilhança esta auto demais'
 def skew_normal_model(x, A, loc, scale, alpha, C):
@@ -58,6 +66,12 @@ qdata = q[:,0]
 data = q[:,1]
 
 ## ------------------------------------------ ##
+# chutes simples para o Free Energy
+
+coef_init = np.polyfit(xdata, ydata, 4) 
+p0_pol_free = coef_init[::-1]  
+
+## ------------------------------------------ ##
 # chutes simples para o DQ
 
 A0 = (data.max()-data.min()) * (qdata.max()-qdata.min())
@@ -73,30 +87,22 @@ p0_sn = [A0, loc0, scale0, alpha0, C0]
 p0_g = [A0, loc0, beta0, C0]
 
 ## ------------------------------------------ ##
-'Calculating fiting curves'
-
-popx, pcov = curve_fit(quartic_model, xdata, ydata)
-test_x = np.linalg.cond(pcov)
-fit_free = quartic_model(xdata, *popx)
-r2_free = coeficiente_test(ydata, fit_free)
-
+'Calculating fiting curve DQ'
 
 ## Using polinimyal third model to DQ
-popp, pcop = curve_fit(third_model, qdata, data, p0=p0_pol)
+popp, pcop = curve_fit(third_model, qdata, data, p0=p0_pol, maxfev=10000)
 test_qp = np.linalg.cond(pcop)
 fit_DQ_pol = third_model(qdata, *popp)
 r2_DQ_pol = coeficiente_test(data, fit_DQ_pol)
 
-print(popp)
-
 ## Using Skew function model to DQ
-popsk, pcosk = curve_fit(skew_normal_model, qdata, data, p0=p0_sn, bounds=([0, x.min(), 1e-6, -20, -np.inf],
+popsk, pcosk = curve_fit(skew_normal_model, qdata, data, p0=p0_sn, maxfev=10000, bounds=([0, x.min(), 1e-6, -20, -np.inf],
                                                             [np.inf, x.max(), np.inf, 20, np.inf]))
 test_qsk = np.linalg.cond(pcosk)
 fit_DQ_sk = skew_normal_model(qdata, *popsk)
 r2_DQ_sk = coeficiente_test(data, fit_DQ_sk)
 
-popq, pcoq = curve_fit(gumbel_model, qdata, data, p0=p0_g, bounds=([0, x.min(), 1e-6, -np.inf],
+popq, pcoq = curve_fit(gumbel_model, qdata, data, p0=p0_g, maxfev=10000, bounds=([0, x.min(), 1e-6, -np.inf],
                                                      [np.inf, x.max(), np.inf, np.inf]))
 test_q = np.linalg.cond(pcoq)
 fit_DQ = gumbel_model(qdata, *popq)
@@ -124,4 +130,35 @@ plt.show()
 # plt.close() 
 
 # np.savetxt('curve_fit_DQ.dat', fit_DQ)
+
+## ------------------------------------------ ##
+'Calculating fiting curve Free Energy'
+
+## Using Polinomyal model to Free Energy
+popx, pcox = curve_fit(quartic_model, xdata, ydata, p0=p0_pol_free, maxfev=10000)
+test_x = np.linalg.cond(pcox)
+fit_free_pol = quartic_model(xdata, *popx)
+r2_free_pol = coeficiente_test(ydata, fit_free_pol)
+
+## Using sum gaussian model to Free Energy
+# popd, pcod = curve_fit(sum_gaussian_model, xdata, ydata, p0=[10, 80, 20, 10, 250, 20, 5], maxfev=30000)
+# test_d = np.linalg.cond(pcod)
+# fit_free_d = sum_gaussian_model(xdata, *popd)
+# r2_free_d = coeficiente_test(ydata, fit_free_d)
+
+# print(test_d, r2_free_d, test_x, r2_free_pol)
+
+plt.scatter(xdata, ydata, s=0.8, label='DQ_PrP', color='black')
+
+plt.plot(xdata, quartic_model(xdata, *popx), 'bx', markeredgewidth=0.5, label='fit_g: a=%5.3f, b=%5.3f, c=%5.3f, d=%5.3f, e=%5.3f, max_v=%5.3f' 
+                                                    % (popx[0], popx[1], popx[2], popx[3], popx[4], test_x))
+
+# plt.plot(xdata, sum_gaussian_model(xdata, *popg), 'r-', markeredgewidth=0.5, label='fit_g: A=%5.3f, mu1=%5.3f, sigma1=%5.3f, B=%5.3f, mu2=%5.3f, sigma2=%5.3f, C=%5.3f, max_v=%5.3f' 
+#                                                     % (popg[0], popg[1], popg[2], popg[3], popg[4], popg[5], popg[6], test_g))
+# plt.plot(xdata, sum_gaussian_model(xdata, *popd), 'r-')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.show()
+
 # np.savetxt('curve_fit_free.dat', fit_free)
