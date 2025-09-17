@@ -86,6 +86,8 @@ p0_pol = coef_init[::-1]  # ajuste de ordem
 p0_sn = [A0, loc0, scale0, alpha0, C0]
 p0_g = [A0, loc0, beta0, C0]
 
+# print(p0_g)
+
 ## ------------------------------------------ ##
 'Calculating fiting curve DQ'
 
@@ -102,11 +104,14 @@ test_qsk = np.linalg.cond(pcosk)
 fit_DQ_sk = skew_normal_model(qdata, *popsk)
 r2_DQ_sk = coeficiente_test(data, fit_DQ_sk)
 
-popq, pcoq = curve_fit(gumbel_model, qdata, data, p0=p0_g, maxfev=10000, bounds=([0, x.min(), 1e-6, -np.inf],
-                                                     [np.inf, x.max(), np.inf, np.inf]))
+popq, pcoq = curve_fit(gumbel_model, qdata, data, p0=p0_g, maxfev=10000, bounds=([0, q.min(), 1e-6, -np.inf],
+                                                     [np.inf, q.max(), np.inf, np.inf]))
 test_q = np.linalg.cond(pcoq)
 fit_DQ = gumbel_model(qdata, *popq)
 r2_DQ = coeficiente_test(data, fit_DQ)
+
+
+print(fit_DQ, len(fit_DQ))
 
 # plt.plot(xdata, quartic_model(xdata, *popx), color='green')
 # plt.scatter(xdata, ydata, s=0.7, color='black')
