@@ -160,12 +160,6 @@ def cond_probV2(x, x0, x1, dx):
 def gumbel_model(x, a, b, c, d):
     return a * np.exp(-((x-b)/c + np.exp(-(x-b)/c))) + d 
 
-def partial_gb(x, a, b, c):
-    return (-a * np.exp((-c*np.exp((x-b)/c)+b-2*x)/c)*np.exp(x/c)-np.exp(b/c))/c
-
 def quartic_model(x, a, b, c, d, e):
     return a*x**4+b*x**3+c*x**2+d*x+e
-
-def partial_qm(x, a, b, c, d):
-    return a*4*x**3+b*3*x**2+c*2*x+d
 
