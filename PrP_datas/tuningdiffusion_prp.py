@@ -41,23 +41,14 @@ popg, pcog = curve_fit(
             [np.inf, data_x.max(), np.inf, np.inf])
 )
 
-#-----------------------
-## Derivatives (analytical forms)
-def quartic_deriv(x, a, b, c, d, e):
-    return 4*a*x**3 + 3*b*x**2 + 2*c*x + d
-
-def gumbel_deriv(x, A, loc, beta, C):
-    z = (x - loc) / beta
-    expz = np.exp(-z)
-    return A * (1/beta) * expz * np.exp(-expz) * (1 - expz)
-
-#-----------------------
-## Fitting + interpolation
 fit_free = libdiff.quartic_model(energy_x, *popp)
-fit_free_partial = quartic_deriv(energy_x, *popp)
+fit_free_partial = libdiff.quartic_deriv(energy_x, *popp)
 
 fit_DQ = libdiff.gumbel_model(data_x, *popg)
-fit_DQ_partial = gumbel_deriv(data_x, *popg)
+fit_DQ_partial = libdiff.gumbel_deriv(data_x, *popg)
+
+#-----------------------
+## Interpolation
 
 F_interp  = interp1d(energy_x, fit_free, kind='cubic', fill_value="extrapolate")
 Fp_interp = interp1d(energy_x, fit_free_partial, kind='cubic', fill_value="extrapolate")
@@ -72,6 +63,7 @@ X = 0.5*(Q_min + Q_max)  # start in middle
 
 Q = []
 T = []
+V = []
 
 for i in range(1, STEPS + 1):
     D  = float(D_interp(X))
@@ -79,6 +71,8 @@ for i in range(1, STEPS + 1):
     Fp = float(Fp_interp(X))
 
     v = Dp - D*Fp   # drift
+
+    V.append(v)
 
     X += v*dt + libdiff.gaussian(D, dt)
 
@@ -88,7 +82,11 @@ for i in range(1, STEPS + 1):
 
 Q = np.asarray(Q)
 T = np.asarray(T)
+V = np.asarray(V)
 
-# Save trajectory (time, Q)
-total = np.stack((T, Q), axis=-1)
-np.savetxt("TRAJECTORY_PrP.dat", total, fmt="%12.6f")
+# Save datas 
+# total = np.stack((T, Q), axis=-1)
+# np.savetxt("TRAJECTORY_PrP.dat", total, fmt="%12.6f")
+# np.savetxt("Drift_PrP.dat", V, fmt="%12.6f")
+# np.savetxt("DQ_PrP.dat", D_interp, fmt="%12.6f")
+# np.savetxt("Free_Energy_PrP.dat", F_interp, fmt="%12.6f")

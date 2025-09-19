@@ -1,7 +1,7 @@
 # coding: utf8
 
 __author__ = "Vitor Samuel Alves de Brito"
-__version__ = "0.0.2"
+__version__ = "0.0.4" # version three there is the curves fiting
 __email__ = "vitorsamuelbr@gmail.com"
 
 import numpy as np
@@ -162,4 +162,13 @@ def gumbel_model(x, a, b, c, d):
 
 def quartic_model(x, a, b, c, d, e):
     return a*x**4+b*x**3+c*x**2+d*x+e
+
+## Derivatives (analytical forms)
+def quartic_deriv(x, a, b, c, d, e):
+    return 4*a*x**3 + 3*b*x**2 + 2*c*x + d
+
+def gumbel_deriv(x, A, loc, beta, C):
+    z = (x - loc) / beta
+    expz = np.exp(-z)
+    return A * (1/beta) * expz * np.exp(-expz) * (1 - expz)
 
