@@ -10,7 +10,7 @@ import library_diffusion as libdiff
 
 #-----------------------
 ## Loading the input data
-energy = np.genfromtxt('Free_energy_teste-Q-run-f50-T140.dat.dat')
+energy = np.genfromtxt('Free_energy_teste-Q-run-f50-T140.dat')
 energy_x = energy[:,0]
 energy_y = energy[:,1]
 
@@ -61,9 +61,10 @@ Q_min = min(energy_x.min(), data_x.min())
 Q_max = max(energy_x.max(), data_x.max())
 X = 0.5*(Q_min + Q_max)  # start in middle
 
+# print(float(D_interp(X)), fit_DQ[0])
+
 Q = []
 T = []
-V = []
 
 for i in range(1, STEPS + 1):
     D  = float(D_interp(X))
@@ -71,8 +72,6 @@ for i in range(1, STEPS + 1):
     Fp = float(Fp_interp(X))
 
     v = Dp - D*Fp   # drift
-
-    V.append(v)
 
     X += v*dt + libdiff.gaussian(D, dt)
 
@@ -82,11 +81,12 @@ for i in range(1, STEPS + 1):
 
 Q = np.asarray(Q)
 T = np.asarray(T)
-V = np.asarray(V)
 
 # Save datas 
-# total = np.stack((T, Q), axis=-1)
-# np.savetxt("TRAJECTORY_PrP.dat", total, fmt="%12.6f")
-# np.savetxt("Drift_PrP.dat", V, fmt="%12.6f")
-# np.savetxt("DQ_PrP.dat", D_interp, fmt="%12.6f")
-# np.savetxt("Free_Energy_PrP.dat", F_interp, fmt="%12.6f")
+traj = np.stack((T, Q), axis=-1)
+DQ =  np.stack((data_x, fit_DQ), axis=-1)
+FQ =  np.stack((energy_x, fit_free), axis=-1)
+
+np.savetxt("TRAJECTORY_PrP.dat", traj, fmt="%12.6f")
+np.savetxt("DQ_PrP.dat", DQ, fmt="%12.6f")
+np.savetxt("Free_Energy_PrP.dat", FQ, fmt="%12.6f")
