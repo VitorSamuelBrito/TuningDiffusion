@@ -157,15 +157,25 @@ def cond_probV2(x, x0, x1, dx):
 
     return ptpx, bin_centers, dist_den
 
-def gumbel_model(x, a, b, c, d):
+## curve to fiting 
+def gumbel_model(x, a, b, c, d): 
+    'Diffusion Coeficient'
     return a * np.exp(-((x-b)/c + np.exp(-(x-b)/c))) + d 
 
+def third_model(x, a, b, c, d):
+    'Diffusion Coeficient'
+    return a*x**3+b*x**2+c*x+d 
+
 def quartic_model(x, a, b, c, d, e):
+    'Free Energy'
     return a*x**4+b*x**3+c*x**2+d*x+e
 
 ## Derivatives (analytical forms)
 def quartic_deriv(x, a, b, c, d, e):
     return 4*a*x**3 + 3*b*x**2 + 2*c*x + d
+
+def third_deriv(x, a, b, c, d):
+    return 3*a*x**2+2*b*x+c 
 
 def gumbel_deriv(x, A, loc, beta, C):
     z = (x - loc) / beta

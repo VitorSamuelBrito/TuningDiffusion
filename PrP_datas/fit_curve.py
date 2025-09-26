@@ -13,7 +13,7 @@ from scipy.stats import skewnorm
 def quadratic_model(x, a, b, c):
     return a * x**2 + b * x + c ## Não funcionou
 
-'Diffusion Coeficient: Funciona, mais valor de máxima verossimilhança esta auto demais'
+'Diffusion Coeficient: Funciona, mais valor de máxima verossimilhança esta auto demais, porém fica melhor visualmente'
 def third_model(x, a, b, c, d):
     return a*x**3+b*x**2+c*x+d 
 
@@ -45,6 +45,7 @@ def gaussian_model(x, a, b, c):
 def skew_normal_model(x, A, loc, scale, alpha, C):
     return A*skewnorm.pdf(x, alpha, loc, scale) + C 
 
+'Diffusion Coeficient: Com chutes simples funciona, e o valor de máxima verossimilhança esta legal, porém fica ruim visualmente
 def gumbel_model(x, a, b, c, d):
     return a * np.exp(-((x-b)/c + np.exp(-(x-b)/c))) + d 
 
