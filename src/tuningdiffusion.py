@@ -107,7 +107,10 @@ for i in range(1, int(STEPS) + 1):
     J = int(X/width) - 1
 
     VX = V[J]
-    X += (-D*VX)*dt+libdiff.gaussian(D,dt)
+    
+    v = -D*VX
+    
+    X += v*dt+libdiff.gaussian(D,dt)
     
     if i % 100==0:  ## spride ## every 100 values
         t = dt*i
