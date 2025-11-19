@@ -40,6 +40,7 @@ jobs:
 
       - name: Creating the Jupyter Notebook
         run: |
+          git pull --all
           py2nb src/tuningdiffusion.py
           py2nb src/tuningdiffusion_sin.py
       - name: Commiting generated files # 
