@@ -1,6 +1,6 @@
 name: Updating Jupyter notebooks
 
-on: [push]
+on: 
   push:
     paths:
       - 'src/**' # Triggers on changes within the 'src' directory and its subdirectories
