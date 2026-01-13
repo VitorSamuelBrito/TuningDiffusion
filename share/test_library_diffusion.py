@@ -5,10 +5,16 @@
 import numpy as np
 import library_diffusion as libdiff
 
+def import_file(filepath):
+    """Function to easily change precision on data being imported"""
+    data_type = np.longdouble
+    return np.genfromtxt(filepath, dtype=data_type)
+
+
 def cartesian(arrays, out=None):
     """
     Obs. Found on internet
-    Generate a Cartesian product of input arrays.
+    Generate a Cartesian product of input_data arrays.
 
     Parameters
     ----------
@@ -21,7 +27,7 @@ def cartesian(arrays, out=None):
     -------
     out : ndarray
         2-D array of shape (M, len(arrays)) containing Cartesian products
-        formed of input arrays.
+        formed of input_data arrays.
 
     Examples
     --------
@@ -59,6 +65,13 @@ def cartesian(arrays, out=None):
     return out
 
 
+def compact_comparison(difference_array, input_array, threshold_zero, threshold):
+    """
+    Function to compare the difference_array values to threshold only where input_array values are above threshold_zero"""
+    return np.less_equal(difference_array[np.less_equal(\
+        np.absolute(input_array), threshold_zero)], threshold).all()
+
+
 def comparison(value, reference):
     """
     Function to compare two vectors given a threshold and a percentage limit
@@ -76,150 +89,264 @@ def comparison(value, reference):
     value = np.asarray(value)
     reference = np.asarray(reference)
     # # To be used in the comparisons
-    threshold = 0.0001 # (direct)
-    threshold_per = 0.01 # (percentage)
+    threshold = 1e-10 # (direct)
+    threshold_per = 1e-6 # (percentage)
+    # Will ignore percentage comparison if value or reference is below 1e-100
+    threshold_zero = 1e-300
     # absolute difference between value and reference
-    difference = np.absolute(np.subtract(np.absolute(value), \
-                                         np.absolute(reference)))
+    difference = np.absolute(np.subtract(value, reference))
     # direct comparison between the difference and threshold
     test_direct = np.less_equal(difference, threshold).all()
+    # which values failed direct comparison (if any)
+    idx_failed_direct = \
+        np.where(np.less_equal(difference[:, 4], threshold)==False)[0]
+    # # Keeping only lines where the direct comparison failed
+    # value = value[idx_failed_direct]
+    # reference =  reference[idx_failed_direct]
+    # difference = difference[idx_failed_direct]
     if test_direct:
-        print("Passed direct comparison")
+        print("Passed direct comparison.")
         test = test_direct
     else:
-        # percent comparison
+        # If none of the following tests return True, must return False
+        test = False
+        # Show where direct comparison is failing (if that happens)
+        #print("{} failed direct comparison at lines {}.".format(idx_failed_direct.shape[0], idx_failed_direct))
+        print("{} failed direct comparison.".format(idx_failed_direct.shape[0]))
+        # Percent comparison.
+        # First, evaluate the percentage difference on values where reference is not zero.
         percentage = np.divide(difference, np.absolute(reference), \
                                out=np.zeros_like(np.absolute(reference)), \
                                 where=np.absolute(reference)!=0)
-        # testing if direct difference when value or reference is zero is 
-        # below threshold
-        if np.less_equal(difference[value==0], threshold).all() and \
-            np.less_equal(difference[reference==0], threshold).all():
-            # excluding percentage comparisons when value is zero
-            percentage = percentage[value!=0]
-            test_percentage = np.less_equal(percentage, threshold_per).all()
+        idx_per = np.where(percentage[:, 4]>=threshold_per)[0]
+        print("There are {} values above percentage threshold.".format(idx_per.shape[0]))
+        # Then tests if direct difference is below threshold when either
+        # correspondent value or reference is zero. Must be True to continue.
+        if compact_comparison(difference, value, threshold_zero, threshold) \
+            and compact_comparison(difference, reference, \
+                threshold_zero, threshold):
+            # Excluding percentage comparisons when value or reference is close
+            # to zero.
+            idx_value_is_far_from_zero = \
+                np.where(np.greater_equal(np.absolute(value[:,4]), \
+                                       threshold_zero))[0]
+            idx_reference_is_far_from_zero = \
+                np.where(np.greater_equal(np.absolute(reference[:,4]), \
+                                       threshold_zero))[0]
+            idx_is_far_from_zero = \
+                np.unique(np.append(idx_value_is_far_from_zero, \
+                                            idx_reference_is_far_from_zero))
+            percentage = percentage[idx_is_far_from_zero]
+            value = value[idx_is_far_from_zero]
+            reference = reference[idx_is_far_from_zero]
+            # In this test, we have to assure comparison only in the functions' results
+            test_percentage = np.less_equal(percentage[:, 4], \
+                                            threshold_per).all()
             if test_percentage:
-                print("Some values have passed only by percentage comparison")
+                idx_passed = np.where(np.less_equal(percentage[:, 4], \
+                                                    threshold_per)==True)[0]
+                print("{} values have passed only by percentage comparison. In total {} values passed in the percentage comparison.".format(idx_failed_direct.shape[0], idx_passed.shape[0]))
             else:
-                print("Failed in percentage comparison")
+                idx_percentage_fail = np.where(np.greater(percentage[:, 4], \
+                                                          threshold_per))
+                print("Largest percentage above threshold is {}.".format(percentage[:, 4].max()))
+                print("Failed percentage comparison which values are {}.".format(percentage[:, 4][idx_percentage_fail]))
+                print("Correspondent reference in the same places are {}".format(reference[:, 4][idx_percentage_fail]))
             test = test_percentage
         else:
-            print("Difference on zero values are above threshold")
+            print("Failed because direct difference where one of the values is zero is above threshold.")
             test = False
     return test
 
+def comparison_gaussian(value, reference):
+    """
+    Function to compare two vectors given a threshold and a percentage limit
+    
+    Parameters
+    ----------
+    value, reference : one value.
+    
+    Returns
+    -------
+    out : boolean
+        comparison between value and reference arrays.
+    """
+    # making sure both are numpy arrays
+    value = np.asarray(value)
+    reference = np.asarray(reference)
+    # # To be used in the comparisons
+    threshold = 10e-5 # 1e-10 # (direct)
+    threshold_per = 10e-3 #1e-6 # (percentage)
+    # absolute difference between value and reference
+    difference = np.absolute(np.subtract(value, reference))
+    # direct comparison between the difference and threshold
+    test_direct = np.less_equal(difference, threshold).all()
+    if test_direct:
+        print("Passed direct comparison.")
+        test = test_direct
+    else:
+        # If none of the following tests return True, must return False
+        test = False
+        # Show where direct comparison is failing (if that happens)
+        print('failed direct comparison, the difference is: ', difference)
+        print('failed direct comparison, the D and dt used is: ', value, reference)
+        # Percent comparison.
+        # First, evaluate the percentage difference on values where reference is not zero.
+        percentage = np.divide(difference, np.absolute(reference), \
+                               out=np.zeros_like(np.absolute(reference)), \
+                                where=np.absolute(reference)!=0)
+        test_percentage = np.less_equal(percentage, threshold_per).all()
+        
+        if test_percentage:
+            print("Passed percentage comparison.")
+            test = test_percentage
+        else:
+            print('failed percentage comparison, the D and dt used is: ', value, reference)
+            print("Don't passed in the tests to standard deviation.")
+            test = False
+    return test
+        
 
 ## comparing each function with respective perl results
 def test_Vx():
     """Function to test the Vx function from library_diffusion"""
     ## To be used in all comparisons
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    sequence = import_file('share/sequence.dat')
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from grad24 generated with perl
-    grad24_data = np.genfromtxt('share/grad24_test.dat')
+    grad24_data = import_file('share/grad24_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Vx(a, b, c, d)])
     results = np.asarray(results)
-#     np.savetxt("results_vx", results, fmt="%10.6f")
-#     results_data = np.genfromtxt('results_vx') ## add test
-    test = comparison(results, grad24_data)    
+    np.savetxt("results_vx", results, fmt="%.18e ")
+#     results_data = import_file('results_vx') ## add test
+    test = comparison(results, grad24_data)
     assert test
+
 
 def test_Fx():
     """Function to test the Fx function from library_diffusion"""
     ## To be used in all comparisons
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    sequence = import_file('share/sequence.dat')
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from E24 generated with perl
-    E24_data = np.genfromtxt('share/E24_test.dat')
+    E24_data = import_file('share/E24_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Fx(a, b, c, d)])
     results = np.asarray(results)
-#     np.savetxt("results_Fx", results, fmt="%10.6f")
-#     results_data = np.genfromtxt('results_Fx') ## add test
+    np.savetxt("results_Fx", results, fmt="%.18e ")
+#     results_data = import_file('results_Fx') ## add test
     test = comparison(results, E24_data)
     assert test
 
 def test_VG():
     """Function to test the VG function from library_diffusion"""
     ## To be used in all comparisons
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    sequence = import_file('share/sequence.dat')
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from gradG generated with perl
-    gradG_data = np.genfromtxt('share/gradG_test.dat')
+    gradG_data = import_file('share/gradG_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.VG(a, b, c, d)])
     results = np.asarray(results)
-#     np.savetxt("results_VG", results, fmt="%10.6f")
-#     results_data = np.genfromtxt('results_VG') ## add test
+    np.savetxt("results_VG", results, fmt="%.18e ")
+#     results_data = import_file('results_VG') ## add test
     test = comparison(results, gradG_data)
     assert test
 
 def test_FG():
     """Function to test the FG function from library_diffusion"""
     ## To be used in all comparisons
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    sequence = import_file('share/sequence.dat')
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from EG generated with perl
-    EG_data = np.genfromtxt('share/EG_test.dat')
+    EG_data = import_file('share/EG_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.FG(a, b, c, d)])
     results = np.asarray(results)
-#     np.savetxt("results_FG", results, fmt="%10.6f")
-#     results_data = np.genfromtxt('results_FG') ## add test
+    np.savetxt("results_FG", results, fmt="%.18e ")
+#     results_data = import_file('results_FG') ## add test
     test = comparison(results, EG_data)
     assert test
 
 def test_Dxsin():
     """Function to test the Dxsin function from library_diffusion"""
     ## To be used in all comparisons
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    sequence = import_file('share/sequence.dat')
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from DDsin generated with perl
-    DDsin_data = np.genfromtxt('share/DDsin_test.dat')
+    DDsin_data = import_file('share/DDsin_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Dxsin(a, b, c, d)])
     results = np.asarray(results)
-#     np.savetxt("results_Dxsin", results, fmt="%10.6f")
-#     results_data = np.genfromtxt('results_Dxsin') ## add test
+    np.savetxt("results_Dxsin", results, fmt="%.18e ")
+#     results_data = import_file('results_Dxsin') ## add test
     test = comparison(results, DDsin_data)
     assert test
 
 def test_Dxsinpartial():
     """Function to test the Dxsinpartial function from library_diffusion"""
     ## loading the sequence used to generate data
-    sequence = np.genfromtxt('share/sequence.dat')
-    ## generate the vector used as input
-    input = cartesian([sequence, sequence, sequence, sequence])
+    sequence = import_file('share/sequence.dat')
+    ## generate the vector used as input_data
+    input_data = cartesian([sequence, sequence, sequence, sequence])
 
     # loading the data from DDsinslope generated with perl
-    DDsinslope_data = np.genfromtxt('share/DDsinslope_test.dat')
+    DDsinslope_data = import_file('share/DDsinslope_test.dat')
     # calculating the results
     results = []
-    for a, b, c, d in input:
+    for a, b, c, d in input_data:
         results.append([a, b, c, d, libdiff.Dxsinpartial(a, b, c, d)])
     results = np.asarray(results)
-#     np.savetxt("results_Dxpartial", results, fmt="%10.6f")
-#     results_data = np.genfromtxt('results_Dxpartial') ## add test
+    np.savetxt("results_Dxpartial", results, fmt="%.18e ")
+#     results_data = import_file('results_Dxpartial') ## add test
     test = comparison(results, DDsinslope_data)
+    assert test
+    
+def test_gaussian():
+    """Function to test the gaussian function from library_diffusion"""
+    ## loading the D and dt used to generate data
+    diff = import_file('share/diff_dt_data.dat')
+    D = diff[0]
+    dt = diff[1]
+
+    # loading the data from gaussian generated with perl
+    gaussian_data = import_file('share/gaussian_perl_data.dat')
+    # calculating the results
+    results = []
+    steps = 10000000
+    
+    for i in range(1, steps +1):
+        val = libdiff.gaussian(D, dt)
+        results.append((val))
+    results = np.asarray(results)
+    np.savetxt("results_gaussian_test", results, fmt="%.18e ")
+    
+    sdt_A = np.std(results)
+    sdt_B = np.std(gaussian_data)
+    
+    max_A = max(results)
+    max_B = max(gaussian_data)
+
+    test = comparison_gaussian(sdt_A, sdt_B)
     assert test

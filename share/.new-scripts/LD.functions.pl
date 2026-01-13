@@ -3,6 +3,31 @@
 ## Functions extracted from original files.
 ## Data generated with this script will be used to test the python functions
 
+## Choosing the diffusion coefficient to test the gaussian function
+my $diffusion_coefficient = int(rand(10));
+
+## Choosing the timestep to be used to test the gaussian function
+my $chosen_dt = rand(1)/100;
+
+
+## Saving data to be used on the comparison 
+open(DATAFILE,">diff_dt_data.dat") or die "can\'t open new file\n";
+printf DATAFILE ("# DIFF dt \n");
+printf DATAFILE ("%.18e %.18e \n", $diffusion_coefficient, $chosen_dt);
+close(DATAFILE) or warn $!;
+
+
+## Creating a distribution using gaussian function
+my $steps = 10000000;
+
+open(DATAFILE,">gaussian_perl_data.dat") or die "can\'t open new file\n";
+for ( my $j = 0; $j < $steps; $j++ )
+{
+	my $gres = gaussian($diffusion_coefficient, $chosen_dt);
+	printf DATAFILE ("%.18e \n", $gres);
+}
+close(DATAFILE) or warn $!;
+
 
 ## Sequence created without zero to avoid division by zero errors
 #@positive = (1 .. 50);
@@ -35,7 +60,7 @@ my @sequence = sort { $a <=> $b } @unsorted_sequence;
 open(INITIALFILE,">sequence.dat") or die "can\'t open new file\n";
 foreach $a (@sequence) {
 #   print "value of a: $a\n";
-	printf INITIALFILE ("%10.6f\n", $a); ## %10.6f
+	printf INITIALFILE ("%.18e\n", $a); ## %.18e
 }
 close(INITIALFILE) or  warn $!;
 
@@ -75,7 +100,7 @@ foreach my $func ( @funcs ) {
         		foreach my $c (@sequence){
         			foreach my $d (@sequence){
         				my $result = $call_func{$func}->($a, $b, $c, $d);
-        				printf FILE ("%10.6f %10.6f %10.6f %10.6f %10.6f\n", $a, $b, $c, $d, $result); ## %10.6f
+        				printf FILE ("%.18e %.18e %.18e %.18e %.18e\n", $a, $b, $c, $d, $result); ## %.18e
         			}
         		}
         	}
@@ -167,4 +192,3 @@ until($RR){
   }
 
 }
-
