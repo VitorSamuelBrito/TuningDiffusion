@@ -1,25 +1,19 @@
 ## Importing libraries
-
 import numpy as np
 
 #-----------------------
 # Instructions: This code generates diffusive trajectories that represent a folding of a protein. 
-
 # Documentation: https://numpy.org/doc/stable/reference/index.html
 
 #-----------------------
-
 # Importing specific functions from library diffusion
-
 import library_diffusion as libdiff
 
 #-----------------------
 ## Loading the input data
-
 vl = np.genfromtxt('../input_data/data.txt')#, dtype= None, delimiter= None)
 
 ## Defining the variables and supplying them with data
-
 # x = vl[0] # reaction coordinate 
 
 D = vl[1] # this the coefficient diffusion
@@ -120,11 +114,8 @@ for i in range(1, int(STEPS) + 1):
 Q = np.asarray(Q)
 T = np.asarray(T)
 
-# total =  np.stack((T, Q), axis=-1)
-# np.savetxt("TRAJECTORY", total, fmt="%5.2f")
-
-invt =  np.stack((Q, T), axis=-1)
-np.savetxt("TRAJECTORY", invt, fmt="%5.2f")
+traj =  np.stack((T, Q), axis=-1)
+np.savetxt("TRAJECTORY", traj, fmt="%12.6f")
 
 #-----------------------
 
