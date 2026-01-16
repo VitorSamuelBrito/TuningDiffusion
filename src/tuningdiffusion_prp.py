@@ -10,11 +10,11 @@ import library_diffusion as libdiff
 
 #-----------------------
 ## Loading the input data
-energy = np.genfromtxt('Free_energy_teste-Q-run-f50-T140.dat')
+energy = np.genfromtxt('../input_data/Free_energy_teste-Q-run-f50-T140.dat')
 energy_x = energy[:,0]
 energy_y = energy[:,1]
 
-data = np.genfromtxt('DQteste-Q-run-f50-T140.dat.2.6.1.dat')
+data = np.genfromtxt('../input_data/DQteste-Q-run-f50-T140.dat.2.6.1.dat')
 data_x = data[:,0]
 data_y = data[:,1]
 
@@ -25,7 +25,7 @@ coef_init_dq = np.polyfit(data_x, data_y, 3)
 x0 = 0.5 * (energy_x.max() + energy_x.min())
 s  = 0.5 * (energy_x.max() - energy_x.min()) # Cálculo do centro e escala
 
-STEPS = 100000000000 ## recomended min is 10**8
+STEPS = 10000000 ## recomended min is 10**8
 dt = 0.01
   
 p0_pol_dq = coef_init_dq[::-1] 
@@ -78,9 +78,11 @@ for i in range(1, STEPS + 1):
     
     X += v*dt + libdiff.gaussian(D, dt)
 
-    if i % 100 == 0:  # save every 100 steps
-        Q.append(X)
-        T.append(i * dt)
+    #if i % 100 == 0:  # save every 100 steps
+        #Q.append(X)
+        #T.append(i * dt)
+    Q.append(X)
+    T.append(i*dt)
 
 Q = np.asarray(Q)
 T = np.asarray(T)

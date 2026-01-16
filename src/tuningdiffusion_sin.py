@@ -108,7 +108,7 @@ DX = np.asarray(DX)
 DXpartial = np.asarray(DXpartial)
 
 total =  np.stack((x, FX, VX, DX), axis=-1)
-np.savetxt("SURFACE_SIN", total, fmt="%10.6f")
+np.savetxt("SURFACE_SIN.dat", total, fmt="%12.6f")
 
 #-----------------------
 ## Trajectory calculation
@@ -128,15 +128,17 @@ for i in range(1, int(STEPS) + 1):
 
     X += v*dt+libdiff.gaussian(D,dt)
     
-    if i % 100==0:  ## spride ## every 100 values
-        t = dt *i
-        Q.append(X)
-        T.append(t)
+    #if i % 100==0:  ## spride ## every 100 values
+        #Q.append(X)
+        #T.append(i*dt)
+    
+    Q.append(X)
+    T.append(i*dt)
     
 Q = np.asarray(Q)
 T = np.asarray(T)
 
 traj =  np.stack((T, Q), axis=-1)
-np.savetxt("TRAJECTORY_SIN", traj, fmt="%12.6f")
+np.savetxt("TRAJECTORY_SIN.dat", traj, fmt="%12.6f")
 
 #-----------------------

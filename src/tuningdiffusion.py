@@ -87,7 +87,7 @@ FX = np.asarray(F)
 x = np.asarray(x)
 
 total =  np.stack((x, FX, V), axis=-1)
-np.savetxt("SURFACE", total, fmt="%10.6f")
+np.savetxt("SURFACE.dat", total, fmt="%12.6f")
 
 #-----------------------
 
@@ -106,16 +106,17 @@ for i in range(1, int(STEPS) + 1):
     
     X += v*dt+libdiff.gaussian(D,dt)
     
-    if i % 100==0:  ## spride ## every 100 values
-        t = dt*i
-        Q.append(X)
-        T.append(t)
+    #if i % 100==0:  ## spride ## every 100 values
+        #Q.append(X)
+        #T.append(i*dt)
+    Q.append(X)
+    T.append(i*dt)
     
 Q = np.asarray(Q)
 T = np.asarray(T)
 
 traj =  np.stack((T, Q), axis=-1)
-np.savetxt("TRAJECTORY", traj, fmt="%12.6f")
+np.savetxt("TRAJECTORY.dat", traj, fmt="%12.6f")
 
 #-----------------------
 
