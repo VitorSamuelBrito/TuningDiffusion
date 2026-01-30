@@ -100,10 +100,10 @@ def comparison(value, reference):
     # which values failed direct comparison (if any)
     idx_failed_direct = \
         np.where(np.less_equal(difference[:, 4], threshold)==False)[0]
-    # Keeping only lines where the direct comparison failed
-    value = value[idx_failed_direct]
-    reference =  reference[idx_failed_direct]
-    difference = difference[idx_failed_direct]
+    # # Keeping only lines where the direct comparison failed
+    # value = value[idx_failed_direct]
+    # reference =  reference[idx_failed_direct]
+    # difference = difference[idx_failed_direct]
     if test_direct:
         print("Passed direct comparison.")
         test = test_direct
@@ -158,6 +158,54 @@ def comparison(value, reference):
             test = False
     return test
 
+def comparison_gaussian(value, reference):
+    """
+    Function to compare two vectors given a threshold and a percentage limit
+    
+    Parameters
+    ----------
+    value, reference : one value.
+    
+    Returns
+    -------
+    out : boolean
+        comparison between value and reference arrays.
+    """
+    # making sure both are numpy arrays
+    value = np.asarray(value)
+    reference = np.asarray(reference)
+    # # To be used in the comparisons
+    threshold = 10e-5 # 1e-10 # (direct)
+    threshold_per = 10e-3 #1e-6 # (percentage)
+    # absolute difference between value and reference
+    difference = np.absolute(np.subtract(value, reference))
+    # direct comparison between the difference and threshold
+    test_direct = np.less_equal(difference, threshold).all()
+    if test_direct:
+        print("Passed direct comparison.")
+        test = test_direct
+    else:
+        # If none of the following tests return True, must return False
+        test = False
+        # Show where direct comparison is failing (if that happens)
+        print('failed direct comparison, the difference is: ', difference)
+        print('failed direct comparison, the D and dt used is: ', value, reference)
+        # Percent comparison.
+        # First, evaluate the percentage difference on values where reference is not zero.
+        percentage = np.divide(difference, np.absolute(reference), \
+                               out=np.zeros_like(np.absolute(reference)), \
+                                where=np.absolute(reference)!=0)
+        test_percentage = np.less_equal(percentage, threshold_per).all()
+        
+        if test_percentage:
+            print("Passed percentage comparison.")
+            test = test_percentage
+        else:
+            print('failed percentage comparison, the D and dt used is: ', value, reference)
+            print("Don't passed in the tests to standard deviation.")
+            test = False
+    return test
+        
 
 ## comparing each function with respective perl results
 def test_Vx():
@@ -273,4 +321,32 @@ def test_Dxsinpartial():
     np.savetxt("results_Dxpartial", results, fmt="%.18e ")
 #     results_data = import_file('results_Dxpartial') ## add test
     test = comparison(results, DDsinslope_data)
+    assert test
+    
+def test_gaussian():
+    """Function to test the gaussian function from library_diffusion"""
+    ## loading the D and dt used to generate data
+    diff = import_file('share/diff_dt_data.dat')
+    D = diff[0]
+    dt = diff[1]
+
+    # loading the data from gaussian generated with perl
+    gaussian_data = import_file('share/gaussian_perl_data.dat')
+    # calculating the results
+    results = []
+    steps = 10000000
+    
+    for i in range(1, steps +1):
+        val = libdiff.gaussian(D, dt)
+        results.append((val))
+    results = np.asarray(results)
+    np.savetxt("results_gaussian_test", results, fmt="%.18e ")
+    
+    sdt_A = np.std(results)
+    sdt_B = np.std(gaussian_data)
+    
+    max_A = max(results)
+    max_B = max(gaussian_data)
+
+    test = comparison_gaussian(sdt_A, sdt_B)
     assert test

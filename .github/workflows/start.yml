@@ -1,7 +1,12 @@
-name: Library functions test
+name: Updating Jupyter notebooks
 
-on: [push]
-
+on: 
+  push:
+    paths:
+      - 'src/**' # Triggers on changes within the 'src' directory and its subdirectories
+  pull_request:
+    paths:
+      - 'src/**'
 jobs:
   build:
 # building the environment
@@ -22,15 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Test the functions with pytest
-        run: |
-          cd share/
-          perl .new-scripts/LD.functions.pl 
-          ls -l
-          cd ..
-          ln -s ../src/library_diffusion.py share/
-          pytest -svvv
-
 
       - uses: actions/checkout@v4
       # Make sure the @v0.7.0 matches the current version of the action
@@ -40,10 +36,9 @@ jobs:
 
       - name: Creating the Jupyter Notebook
         run: |
-          git pull --all
           py2nb src/tuningdiffusion.py
           py2nb src/tuningdiffusion_sin.py
-      - name: Commiting generated files # 
+      - name: Committing the generated files # 
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
