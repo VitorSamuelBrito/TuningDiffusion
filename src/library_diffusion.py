@@ -50,3 +50,4 @@ def Dxsinpartial(D, A, x, lamb):
     partial = A/lamb*np.cos(x/lamb)
     return partial
 
+
