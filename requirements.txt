@@ -8,3 +8,4 @@ urllib3
 pytest 
 pytest-cov
 jupyter
+scikit-learn

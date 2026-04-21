@@ -1,7 +1,7 @@
 # coding: utf8
 
 __author__ = "Vitor Samuel Alves de Brito"
-__version__ = "0.0.7" # version three there is the curves fiting
+__version__ = "0.0.7" # version three there is the curves fitting
 __email__ = "vitorsamuelbr@gmail.com"
 
 ## Importing libraries
